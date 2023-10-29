@@ -1,0 +1,72 @@
+$primary-color: #053b50;
+$secondary-color: #176b87;
+$background-color: #eeeeee;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  text-decoration: none;
+  line-height: 1.2em;
+  font-size: 1.1rem;
+  color: $primary-color;
+}
+
+body {
+  font-family: 'Montserrat Regular';
+  background-color: $background-color;
+}
+
+.main-content {
+  margin-top: 10vh;
+}
+
+// @mixin
+@mixin center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin section-heading {
+  width: 100%;
+  font-size: 2rem;
+  text-align: center;
+  @include center;
+}
+
+@mixin container($fdir) {
+  display: flex;
+  flex-direction: $fdir;
+
+  height: 90vh;
+  width: 100%;
+}
+
+@mixin button {
+  background-color: $primary-color;
+  color: $background-color;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  box-shadow: none;
+  padding: 1rem;
+  border-radius: 5px;
+  border: none;
+  transition: 0.3s;
+}
+
+@mixin button-hover {
+  transform: scale(0.98);
+  background-color: rgba(255, 246, 246, 0.333);
+  color: $primary-color;
+  border: none;
+}
+
+@mixin card-hover {
+  transform: scale(1.1);
+  background-color: $secondary-color;
+  color: $background-color;
+}

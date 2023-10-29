@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export type Product = {
+export type ProductType = {
   id: number
   name: string
   image: string
@@ -11,19 +11,23 @@ export type Product = {
 }
 
 export type ProductState = {
-  items: Product[]
+  fetchedProducts: ProductType[]
+  products: ProductType[]
   error: null | string
   isLoading: boolean
+  product: ProductType | undefined | {}
 }
 
 const initialState: ProductState = {
-  items: [],
+  fetchedProducts: [],
+  products: [],
   error: null,
-  isLoading: false
+  isLoading: false,
+  product: {}
 }
 
-export const userSlice = createSlice({
-  name: 'user',
+export const productSlice = createSlice({
+  name: 'product',
   initialState,
   reducers: {
     productsRequest: (state) => {
@@ -31,18 +35,57 @@ export const userSlice = createSlice({
     },
     productsSuccess: (state, action) => {
       state.isLoading = false
-      state.items = action.payload
+      state.fetchedProducts = action.payload
+      state.products = action.payload
     },
-    addProduct: (state, action: { payload: { product: Product } }) => {
-      // let's append the new product to the beginning of the array
-      state.items = [action.payload.product, ...state.items]
+    addProduct: (state, action) => {
+      const product = action.payload
+      state.fetchedProducts = [product, ...state.fetchedProducts]
+      state.products = state.fetchedProducts
     },
-    removeProduct: (state, action: { payload: { productId: number } }) => {
-      const filteredItems = state.items.filter((product) => product.id !== action.payload.productId)
-      state.items = filteredItems
+    editProduct: (state, action) => {
+      const product = action.payload
+      const productId = product.id
+      state.fetchedProducts = state.fetchedProducts.filter((product) => product.id !== productId)
+      state.fetchedProducts = [product, ...state.fetchedProducts]
+      state.products = state.fetchedProducts
+    },
+    removeProduct: (state, action) => {
+      const productId = action.payload
+      state.fetchedProducts = state.fetchedProducts.filter((product) => product.id !== productId)
+      state.products = state.fetchedProducts
+    },
+    getProductById: (state, action) => {
+      state.product = state.products.find((product) => product.id == +action.payload)
+    },
+    getProductsByCategory: (state, action) => {
+      const options = action.payload
+      options.length
+        ? (state.products = state.fetchedProducts.filter((product) => {
+            let filteredCat = product.categories.some((category) => options.includes(category))
+            return filteredCat
+          }))
+        : (state.products = state.fetchedProducts)
+    },
+
+    search: (state, action) => {
+      const searchTerm = action.payload
+      state.products = state.fetchedProducts.filter((product) => {
+        return product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      })
     }
   }
 })
-export const { removeProduct, addProduct, productsRequest, productsSuccess } = userSlice.actions
+export const {
+  removeProduct,
+  addProduct,
+  editProduct,
+  productsRequest,
+  productsSuccess,
+  getProductById,
+  getProductsByCategory,
 
-export default userSlice.reducer
+  search
+} = productSlice.actions
+
+export default productSlice.reducer
