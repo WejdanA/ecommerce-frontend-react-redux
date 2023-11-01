@@ -1,28 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export type UserType = {
-  id: 1
+  id: number
   firstName: string
   lastName: string
   email: string
   password: string
   role: string
+  isBlocked: boolean
 }
 
 export type UserState = {
   users: UserType[]
-  blockedUsers: number[]
   error: null | string
   isLoading: boolean
-  user: UserType | undefined | {}
+  user: UserType | null | undefined
+  isLogin: boolean
+  loginUser: null | UserType
 }
 
 const initialState: UserState = {
   users: [],
-  blockedUsers: [0],
   error: null,
   isLoading: false,
-  user: {}
+  user: null,
+  isLogin: false,
+  loginUser: null
 }
 
 export const userSlice = createSlice({
@@ -41,27 +44,62 @@ export const userSlice = createSlice({
       state.users = [user, ...state.users]
     },
     editUser: (state, action) => {
-      const user = action.payload
-      const userId = user.id
-      state.users = state.users.filter((user) => user.id !== userId)
-      state.users = [user, ...state.users]
+      const editedUser = action.payload
+      const updatedUsers = state.users.map((user) => {
+        if (user.id == editedUser.id) {
+          return editedUser
+        }
+        return user
+      })
+      state.users = updatedUsers
+      state.loginUser = editedUser
     },
     removeUser: (state, action) => {
       const userId = action.payload
       state.users = state.users.filter((user) => user.id !== userId)
     },
     getUserById: (state, action) => {
-      state.user = state.users.find((user) => user.id == +action.payload)
+      state.user = state.users.find((user) => user.id == action.payload)
     },
-    blockUser: (state, action) => {
-      const userId: number = +action.payload
-      state.blockedUsers.push[userId]
-      console.log(state.blockedUsers)
+    block: (state, action) => {
+      const userId = action.payload
+      const updatedBlock = state.users.map((user) => {
+        if (user.id == userId) {
+          user.isBlocked = !user.isBlocked
+        }
+      })
     },
-    isBlocked: (state, action) => {}
+
+    updateRole: (state, action) => {
+      const { userId, role } = action.payload
+      const updatedRole = state.users.map((user) => {
+        if (user.id == userId) {
+          user.role = role
+        }
+      })
+    },
+
+    login: (state, action) => {
+      state.isLogin = true
+      state.loginUser = action.payload
+    },
+    logout: (state) => {
+      state.isLogin = false
+      state.loginUser = null
+    }
   }
 })
-export const { removeUser, addUser, editUser, usersRequest, usersSuccess, getUserById, blockUser } =
-  userSlice.actions
+export const {
+  usersRequest,
+  usersSuccess,
+  removeUser,
+  getUserById,
+  block,
+  updateRole,
+  addUser,
+  editUser,
+  login,
+  logout
+} = userSlice.actions
 
 export default userSlice.reducer

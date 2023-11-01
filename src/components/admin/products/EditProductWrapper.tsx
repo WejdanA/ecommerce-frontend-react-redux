@@ -1,15 +1,13 @@
-import { useState, ChangeEvent, FormEvent, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { SubmitHandler } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react'
+
+import { AppDispatch, RootState } from '../../../redux/store'
+import { editProduct, getProductById, ProductType } from '../../../redux/slices/productSlice'
 
 import { ProductForm } from './ProductForm'
-import {
-  editProduct,
-  getProductById,
-  ProductType
-} from '../../../redux/slices/products/productSlice'
-import { AppDispatch, RootState } from '../../../redux/store'
-import { useParams } from 'react-router-dom'
 
 const initialProductState: ProductType = {
   id: 0,
@@ -21,22 +19,25 @@ const initialProductState: ProductType = {
   sizes: []
 }
 
+type Inputs = {
+  name: string
+  image: string
+  description: string
+  categories: []
+  variants: []
+  sizes: []
+}
+
 export function EditProductWrapper() {
   const { id } = useParams()
 
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
+
   const currentProduct = useSelector((state: RootState) => state.products.product)
   const categories = useSelector((state: RootState) => state.categories.categories)
-  const [product, setProduct] = useState<ProductType>(initialProductState)
 
-  type Inputs = {
-    name: string
-    image: string
-    description: string
-    categories: []
-    variants: []
-    sizes: []
-  }
+  const [product, setProduct] = useState<ProductType>(initialProductState)
 
   useEffect(() => {
     dispatch(getProductById(id))
@@ -48,7 +49,6 @@ export function EditProductWrapper() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
     let categoriesEvent
-
     if (Array.isArray(e)) {
       let value: Number[] = []
       e.map((option) => {
@@ -74,12 +74,13 @@ export function EditProductWrapper() {
     })
   }
 
-  const formSubmit: SubmitHandler<Inputs> = (data) => {
+  const formSubmit: SubmitHandler<Inputs> = () => {
     // update the product
-
+    console.log('product', product)
     dispatch(editProduct(product))
     // Reset the form
     setProduct(initialProductState)
+    navigate('/admin/products')
   }
 
   return (
@@ -90,6 +91,7 @@ export function EditProductWrapper() {
         handleChange={handleChange}
         product={product}
         categories={categories}
+        formType={'Update Product'}
       />
     </div>
   )

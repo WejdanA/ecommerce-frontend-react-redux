@@ -1,8 +1,8 @@
-import { ChangeEvent, FormEvent } from 'react'
+import { ChangeEvent } from 'react'
 import Select from 'react-select'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
-import { ProductType } from '../../../redux/slices/products/productSlice'
+import { ProductType } from '../../../redux/slices/productSlice'
 import { CategoryType } from '../../../redux/slices/categorySlice'
 
 type OptionType = { value: string; label: string; name: string }
@@ -12,6 +12,7 @@ type ProductFormProps = {
   categories: CategoryType[]
   formSubmit: SubmitHandler<Inputs>
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => void
+  formType: string
 }
 
 type Inputs = {
@@ -23,12 +24,26 @@ type Inputs = {
   sizes: []
 }
 
-export function ProductForm({ product, categories, formSubmit, handleChange }: ProductFormProps) {
+export function ProductForm({
+  product,
+  categories,
+  formSubmit,
+  handleChange,
+  formType
+}: ProductFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<Inputs>()
+  } = useForm<Inputs>({
+    values: {
+      name: product.name,
+      image: product.image,
+      description: product.description,
+      variants: product.variants,
+      sizes: product.sizes
+    }
+  })
 
   let options: OptionType[] = []
   let option: OptionType
@@ -52,7 +67,6 @@ export function ProductForm({ product, categories, formSubmit, handleChange }: P
           type="text"
           id="name"
           {...register('name', { required: true })}
-          value={product.name}
           onChange={handleChange}
           className={inputStyle}
         />
@@ -70,7 +84,6 @@ export function ProductForm({ product, categories, formSubmit, handleChange }: P
             required: true,
             pattern: /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??/
           })}
-          value={product.image}
           onChange={handleChange}
           className={inputStyle}
         />
@@ -83,7 +96,6 @@ export function ProductForm({ product, categories, formSubmit, handleChange }: P
         </label>
         <textarea
           id="description"
-          value={product.description}
           {...register('description', {
             required: true
           })}
@@ -117,7 +129,6 @@ export function ProductForm({ product, categories, formSubmit, handleChange }: P
         <input
           type="text"
           id="variants"
-          value={product.variants.join(',')}
           {...register('variants', {
             required: true
           })}
@@ -133,7 +144,6 @@ export function ProductForm({ product, categories, formSubmit, handleChange }: P
         <input
           type="text"
           id="sizes"
-          value={product.sizes.join(',')}
           {...register('sizes', {
             required: true
           })}
@@ -145,7 +155,7 @@ export function ProductForm({ product, categories, formSubmit, handleChange }: P
       <button
         type="submit"
         className="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-        Add Product
+        {formType}
       </button>
     </form>
   )

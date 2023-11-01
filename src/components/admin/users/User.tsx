@@ -1,16 +1,21 @@
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { RootState } from '../../../redux/store'
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
+
 import { getUserById, UserType } from '../../../redux/slices/userSlice'
 
 export const User = () => {
   const { id } = useParams()
+
   const user: UserType = useSelector((state: RootState) => state.users.user)
+
   const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(getUserById(id))
-  }, [])
+  }, [id])
+
   return (
     <>
       {user ? (

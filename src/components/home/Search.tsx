@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { search } from '../../redux/slices/products/productSlice'
+import { search } from '../../redux/slices/productSlice'
 
 export const Search = () => {
   const dispatch = useDispatch()

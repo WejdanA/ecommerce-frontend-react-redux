@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { RootState, AppDispatch } from '../../redux/store'
-import { getProductsByCategory } from '../../redux/slices/products/productSlice'
+import { getProductsByCategory } from '../../redux/slices/productSlice'
 
 export const Filter = () => {
   const { categories } = useSelector((state: RootState) => state.categories)

@@ -1,13 +1,18 @@
+import { ChangeEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../redux/store'
-import { ChangeEvent, useEffect } from 'react'
 
-import { ProductType } from '../../redux/slices/products/productSlice'
-import { removeItem, editQuantity } from '../../redux/slices/cartSlice'
+import { RootState } from '../../redux/store'
+import { ProductType } from '../../redux/slices/productSlice'
+import { removeItem, editQuantity, clearCart } from '../../redux/slices/cartSlice'
+import { Link } from 'react-router-dom'
+import { addOrder } from '../../redux/slices/orderSlice'
 
 export const Cart = () => {
+  const navigate = useNavigate()
   const { items, isEmpty } = useSelector((state: RootState) => state.cartItems)
   const products = useSelector((state: RootState) => state.products.products)
+  const { isLogin, loginUser } = useSelector((state: RootState) => state.users)
   const dispatch = useDispatch()
 
   let product: ProductType | undefined
@@ -20,12 +25,25 @@ export const Cart = () => {
   }
 
   const quantityHandle = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log('quantityedit')
-    const itemProductId = e.target.id
-    const quantity = e.target.value
-    console.log(itemProductId)
-    console.log(quantity)
-    dispatch(editQuantity([itemProductId, quantity]))
+    const { id: itemProductId, value: quantity } = e.target
+
+    dispatch(editQuantity({ itemProductId, quantity }))
+  }
+
+  const addOrderHandle = () => {
+    console.log('inside add order')
+    items.map((item) =>
+      dispatch(
+        addOrder({
+          id: +new Date(),
+          productId: item.productId,
+          userId: loginUser?.id,
+          purchasedAt: new Date()
+        })
+      )
+    )
+    dispatch(clearCart())
+    navigate('/user/profile')
   }
 
   return (
@@ -51,7 +69,13 @@ export const Cart = () => {
           </button>
         </div>
       ))}
-      <button>place order</button>
+      {isLogin ? (
+        <button onClick={() => addOrderHandle()}>place order</button>
+      ) : (
+        <Link to="/login">
+          <button>please log in to complete your order</button>
+        </Link>
+      )}
     </div>
   )
 }

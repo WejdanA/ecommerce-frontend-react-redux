@@ -68,6 +68,22 @@
   }
 }
 
+.product-container {
+  background-color: white;
+  height: 90vh;
+  .product {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    .product-details {
+      position: relative;
+      left: 50%;
+      transform: translate(-50%, 0);
+      text-align: center;
+    }
+  }
+}
 // product details
 img.product-details {
   width: 10rem;

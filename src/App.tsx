@@ -1,5 +1,3 @@
-// import './App.css'
-
 import { Products } from './components/home/Products'
 import { Hero } from './components/home/Hero'
 import { Search } from './components/home/Search'

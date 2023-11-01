@@ -1,31 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export type Order = {
+export type OrderType = {
   id: number
   productId: number
-  userId: number
-  purchasedAt: Date
-}
-export type CartItem = {
-  productId: number
+  price: number
   userId: number
   purchasedAt: Date
 }
 
 export type OrderState = {
-  orders: Order[]
-  error: null | string
+  orders: OrderType[]
+  userOrders: OrderType[]
+  error: string | null
   isLoading: boolean
-  order: Order | {} | undefined
-  cartItem: string[]
 }
 
 const initialState: OrderState = {
   orders: [],
+  userOrders: [],
   error: null,
-  isLoading: false,
-  order: {},
-  cartItem: []
+  isLoading: false
 }
 
 export const orderSlice = createSlice({
@@ -39,21 +33,15 @@ export const orderSlice = createSlice({
       state.isLoading = false
       state.orders = action.payload
     },
-    addOrder: (state, action: { payload: { order: Order } }) => {
-      state.orders = [action.payload.order, ...state.orders]
+    addOrder: (state, action) => {
+      state.orders = [action.payload, ...state.orders]
+    },
+    getOrdersByUser: (state, action) => {
+      const userId = action.payload
+      state.userOrders = state.orders.filter((order) => order.userId == userId)
     }
-    // removeProduct: (state, action: { payload: { productId: number } }) => {
-    //   const filteredItems = state.products.filter(
-    //     (product) => product.id !== action.payload.productId
-    //   )
-    //   state.products = filteredItems
-    // },
-    // getProductById: (state, action) => {
-    //   state.product = state.products.find((product) => product.id == action.payload)
-    //   console.log(state.products)
-    // },
   }
 })
-export const { ordersRequest, ordersSuccess } = orderSlice.actions
+export const { ordersRequest, ordersSuccess, addOrder, getOrdersByUser } = orderSlice.actions
 
 export default orderSlice.reducer

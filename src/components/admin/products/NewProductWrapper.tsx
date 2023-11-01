@@ -1,10 +1,10 @@
-import { useState, ChangeEvent, FormEvent } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState, ChangeEvent } from 'react'
 import { SubmitHandler } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { ProductForm } from './ProductForm'
-import { addProduct, ProductType } from '../../../redux/slices/products/productSlice'
 import { AppDispatch, RootState } from '../../../redux/store'
+import { addProduct, ProductType } from '../../../redux/slices/productSlice'
 
 const initialProductState: ProductType = {
   id: 0,
@@ -74,6 +74,7 @@ export function NewProductWrapper() {
         handleChange={handleChange}
         product={product}
         categories={categories}
+        formType={'Create Product'}
       />
     </div>
   )

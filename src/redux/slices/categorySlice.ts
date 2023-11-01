@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { ProductType } from './products/productSlice'
+import { ProductType } from './productSlice'
 
 export type CategoryType = {
   id: number
@@ -34,23 +34,24 @@ export const categorySlice = createSlice({
     addCategory: (state, action) => {
       state.categories = [action.payload, ...state.categories]
     },
+
+    editCategory: (state, action) => {
+      const editedCategory = action.payload
+      const updatedCategories = state.categories.map((category) => {
+        if (category.id == editedCategory.id) {
+          return editedCategory
+        }
+        return category
+      })
+      state.categories = updatedCategories
+    },
+
     removeCategory: (state, action) => {
       state.categories = state.categories.filter((category) => category.id !== action.payload)
-    },
-    editProduct: (state, action) => {
-      const category = action.payload
-      const categoryId = category.id
-      state.categories = state.categories.filter((category) => category.id !== categoryId)
-      state.categories = [category, ...state.categories]
     }
-
-    // getProductById: (state, action) => {
-    //   state.product = state.products.find((product) => product.id == action.payload)
-    //   console.log(state.products)
-    // },
   }
 })
-export const { categoriesRequest, categoriesSuccess, addCategory, removeCategory } =
+export const { categoriesRequest, categoriesSuccess, addCategory, editCategory, removeCategory } =
   categorySlice.actions
 
 export default categorySlice.reducer

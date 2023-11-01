@@ -30,11 +30,14 @@ export function Products() {
         <div key={product.id} className="product">
           <img src={product.image} alt={product.name} width="50" className="product-img" />
           <h2>{product.name}</h2>
+          <p>{product.description}</p>
+          <span>{product.sizes[0]}</span>
+          <span> {product.variants[0]}</span>
           <button id={`${product.id}`} className=" button product-btn" onClick={addItemHandle}>
             Add to the Cart
           </button>
-          <Link to={`/products/product/${product.id}`}>
-            <button className=" button product-btn">More Details</button>
+          <Link to={`/product/${product.id}`}>
+            <button className="button product-btn">More Options</button>
           </Link>
         </div>
       ))}

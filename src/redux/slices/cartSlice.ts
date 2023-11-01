@@ -10,14 +10,12 @@ export type ItemState = {
   items: ItemType[]
   itemsNo: number
   isEmpty: boolean
-  item: ItemType | {} | undefined
 }
 
 const initialState: ItemState = {
   items: [],
   itemsNo: 0,
-  isEmpty: true,
-  item: {}
+  isEmpty: true
 }
 
 export const itemSlice = createSlice({
@@ -42,18 +40,23 @@ export const itemSlice = createSlice({
       state.items.length ? (state.isEmpty = false) : (state.isEmpty = true)
     },
     editQuantity: (state, action) => {
-      const itemProductId = +action.payload[0]
-      const quantity = action.payload[1]
+      const { itemProductId, quantity } = action.payload
       const itemIndex = state.items.findIndex((item) => item.productId == itemProductId)
-      if (quantity != 0) {
+
+      if (quantity != 0 && itemIndex != -1) {
         state.items[itemIndex].quantity = quantity
       } else {
-        state.items = state.items.filter((item) => item.productId !== itemProductId)
+        state.items = state.items.filter((item) => item.productId != itemProductId)
         state.itemsNo = state.items.length
       }
+    },
+
+    clearCart: (state) => {
+      state.items = []
+      state.itemsNo = 0
     }
   }
 })
-export const { removeItem, addItem, editQuantity } = itemSlice.actions
+export const { removeItem, addItem, editQuantity, clearCart } = itemSlice.actions
 
 export default itemSlice.reducer
