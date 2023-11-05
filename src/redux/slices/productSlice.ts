@@ -5,6 +5,7 @@ export type ProductType = {
   name: string
   image: string
   description: string
+  price: number
   categories: number[]
   variants: string[]
   sizes: string[]
@@ -69,11 +70,11 @@ export const productSlice = createSlice({
     },
 
     getProductsByCategory: (state, action) => {
-      const filterCategories = action.payload
-      filterCategories.length
+      const filterCategoriesIds = action.payload
+      filterCategoriesIds.length
         ? (state.products = state.fetchedProducts.filter((product) => {
-            let filteredCat = product.categories.some((category) =>
-              filterCategories.includes(category)
+            let filteredCat = product.categories.some((categoryId) =>
+              filterCategoriesIds.includes(categoryId)
             )
             return filteredCat
           }))
@@ -85,6 +86,31 @@ export const productSlice = createSlice({
       state.products = state.fetchedProducts.filter((product) => {
         return product.name.toLowerCase().includes(searchTerm.toLowerCase())
       })
+    },
+
+    sortProducts: (state, action) => {
+      const option = action.payload
+      if (option == 1) {
+        // sort by name a to z
+        state.products.sort((a: ProductType, b: ProductType) => {
+          return a.name.localeCompare(b.name)
+        })
+      } else if (option == -1) {
+        // sort by name z to a
+        state.products.sort((a: ProductType, b: ProductType) => {
+          return b.name.localeCompare(a.name)
+        })
+      } else if (option == 2) {
+        // sort by price low to high
+        state.products.sort((a: ProductType, b: ProductType) => {
+          return a.price - b.price
+        })
+      } else {
+        // sort by price high to low
+        state.products.sort((a: ProductType, b: ProductType) => {
+          return b.price - a.price
+        })
+      }
     }
   }
 })
@@ -96,8 +122,8 @@ export const {
   productsSuccess,
   getProductById,
   getProductsByCategory,
-
-  search
+  search,
+  sortProducts
 } = productSlice.actions
 
 export default productSlice.reducer

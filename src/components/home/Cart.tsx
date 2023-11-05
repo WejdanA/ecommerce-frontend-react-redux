@@ -14,6 +14,7 @@ export const Cart = () => {
   const products = useSelector((state: RootState) => state.products.products)
   const { isLogin, loginUser } = useSelector((state: RootState) => state.users)
   const dispatch = useDispatch()
+  // const [totalPrice, setTotalPrice] = useState(0)
 
   let product: ProductType | undefined
   const findItemDetails = (productId: number) => {
@@ -29,9 +30,13 @@ export const Cart = () => {
 
     dispatch(editQuantity({ itemProductId, quantity }))
   }
+  const getTotalPrice = () => {
+    let totalPrice = 0
+    items.map((item) => (totalPrice += item.price * item.quantity))
+    return totalPrice
+  }
 
   const addOrderHandle = () => {
-    console.log('inside add order')
     items.map((item) =>
       dispatch(
         addOrder({
@@ -48,33 +53,48 @@ export const Cart = () => {
 
   return (
     <div id="cart" className="cart main-content">
-      <h1>Cart Items </h1>
-      {isEmpty && <h1>The cart is empty</h1>}
-      {items.map((item) => (
-        <div key={item.id}>
-          {findItemDetails(item.productId).id}
-          <div>
-            <h1>{product.name}</h1>
-            <img src={product.image} alt={product.name} width="50" className="product-img" />
-          </div>
-          <input
-            type="number"
-            name="quantity"
-            id={`${item.productId}`}
-            value={item.quantity}
-            onChange={quantityHandle}
-          />
-          <button id={`${item.productId}`} onClick={() => dispatch(removeItem(item.productId))}>
-            remove
-          </button>
-        </div>
-      ))}
-      {isLogin ? (
-        <button onClick={() => addOrderHandle()}>place order</button>
+      {isEmpty ? (
+        <h1>The cart is empty</h1>
       ) : (
-        <Link to="/login">
-          <button>please log in to complete your order</button>
-        </Link>
+        <>
+          {items.map((item) => (
+            <div key={item.id} className="cart-item">
+              <div className="cart-item-details">{findItemDetails(item.productId)?.id} </div>
+              <div>
+                <img src={product?.image} alt={product?.name} width="50" className="product-img" />
+              </div>
+              <Link to={`/product/${product?.id}`}>
+                <h1 className="cart-item-details">{product?.name}</h1>
+              </Link>
+              <input
+                type="number"
+                name="quantity"
+                id={`${item.productId}`}
+                className="cart-item-details"
+                value={item.quantity}
+                onChange={quantityHandle}
+              />
+              <div className="cart-item-details">{Number(product?.price) * item.quantity} </div>
+              <button
+                id={`${item.productId}`}
+                className="cart-item-details remove-btn"
+                onClick={() => dispatch(removeItem(item.productId))}>
+                x
+              </button>
+            </div>
+          ))}
+          <div className="total-price">total amount: {getTotalPrice()} SAR</div>
+
+          {isLogin ? (
+            <button className="order-btn" onClick={() => addOrderHandle()}>
+              place order
+            </button>
+          ) : (
+            <Link to="/login">
+              <button className="order-btn">please log in to complete your order</button>
+            </Link>
+          )}
+        </>
       )}
     </div>
   )

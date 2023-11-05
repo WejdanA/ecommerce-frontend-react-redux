@@ -12,7 +12,13 @@ export const Search = () => {
 
   return (
     <div id="search">
-      <input type="text" id="search-term" placeholder="search by name" onChange={searchHandle} />
+      <input
+        type="text"
+        id="search-term"
+        className="search"
+        placeholder="search by name"
+        onChange={searchHandle}
+      />
     </div>
   )
 }

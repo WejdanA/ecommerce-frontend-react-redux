@@ -4,6 +4,7 @@ export type ItemType = {
   id: number
   productId: number
   quantity: number
+  price: number
 }
 
 export type ItemState = {
@@ -54,6 +55,7 @@ export const itemSlice = createSlice({
     clearCart: (state) => {
       state.items = []
       state.itemsNo = 0
+      state.isEmpty = true
     }
   }
 })

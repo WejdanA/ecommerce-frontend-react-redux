@@ -1,6 +1,7 @@
 $primary-color: #053b50;
 $secondary-color: #176b87;
 $background-color: #eeeeee;
+$white-color: white;
 
 * {
   box-sizing: border-box;
@@ -20,6 +21,8 @@ body {
 
 .main-content {
   margin-top: 10vh;
+  width: 100%;
+  max-width: 100%;
 }
 
 // @mixin
@@ -40,7 +43,6 @@ body {
 @mixin container($fdir) {
   display: flex;
   flex-direction: $fdir;
-
   height: 90vh;
   width: 100%;
 }
@@ -67,6 +69,4 @@ body {
 
 @mixin card-hover {
   transform: scale(1.1);
-  background-color: $secondary-color;
-  color: $background-color;
 }

@@ -1,8 +1,9 @@
+import { MultiValue } from 'react-select'
 import { useParams } from 'react-router-dom'
-import { SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { SubmitHandler } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { useState, ChangeEvent, FormEvent, useEffect } from 'react'
+import { useState, ChangeEvent, useEffect } from 'react'
 
 import { AppDispatch, RootState } from '../../../redux/store'
 import { editProduct, getProductById, ProductType } from '../../../redux/slices/productSlice'
@@ -14,6 +15,7 @@ const initialProductState: ProductType = {
   name: '',
   image: '',
   description: '',
+  price: 0,
   categories: [],
   variants: [],
   sizes: []
@@ -27,6 +29,8 @@ type Inputs = {
   variants: []
   sizes: []
 }
+
+type OptionType = { value: string; label: string; name: string }
 
 export function EditProductWrapper() {
   const { id } = useParams()
@@ -47,7 +51,9 @@ export function EditProductWrapper() {
     setProduct(currentProduct)
   }, [currentProduct])
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | MultiValue<OptionType>
+  ) => {
     let categoriesEvent
     if (Array.isArray(e)) {
       let value: Number[] = []
@@ -85,7 +91,6 @@ export function EditProductWrapper() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold main-content">Edit product</h3>
       <ProductForm
         formSubmit={formSubmit}
         handleChange={handleChange}

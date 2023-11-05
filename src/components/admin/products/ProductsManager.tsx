@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Accordion } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, RootState } from '../../../redux/store'
@@ -15,30 +16,60 @@ export function ProductsManager() {
   return (
     <div className="main-content">
       <Admin />
-      <div className="grid grid-cols-1 md:grid-cols-2 w-full main main-content">
-        <NewProductWrapper />
-        {products.isLoading && <h3> Loading products...</h3>}
-        <div className="card grid gap-4">
-          <ul>
-            {products.fetchedProducts.map((product) => (
-              <li key={product.id} className="flex items-center gap-4 text-2xl mb-2">
-                <img src={product.image} alt={product.name} width="50" />
-                <span>{product.name}</span>
-                <Link to={`/admin/products/${product.id}`}>
-                  <button className=" text-red-400 text-xs">Edit</button>
-                </Link>
+      <div className="main main-content">
+        <div className="local-bootstrap">
+          <Accordion className="admin-form">
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>Add New product </Accordion.Header>
+              <Accordion.Body>
+                <NewProductWrapper />
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </div>
 
-                <button
-                  className=" text-red-400 text-xs"
-                  onClick={() => {
-                    dispatch(removeProduct(product.id))
-                    dispatch(removeItem(product.id))
-                  }}>
-                  X
-                </button>
-              </li>
-            ))}
-          </ul>
+        {products.isLoading && <h3> Loading products...</h3>}
+        <div className="local-bootstrap">
+          {' '}
+          <table className="table table-striped">
+            <thead className="thead-dark">
+              <tr>
+                <th scope="col">id</th>
+                <th scope="col">name</th>
+                <th scope="col">price</th>
+                <th scope="col">image</th>
+                <th scope="col">Variants</th>
+                <th scope="col">sizes</th>
+                <th scope="col">operations</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {products.fetchedProducts.map((product) => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>{product.name}</td>
+                  <td>{product.price}</td>
+                  <td>
+                    <img src={product.image} alt={product.name} width="50" />
+                  </td>
+                  <td>{product.variants.join(',')}</td>
+                  <td>{product.sizes.join(',')}</td>
+                  <Link to={`/admin/products/${product.id}`}>
+                    <button className=" ">Edit</button>
+                  </Link>
+                  <button
+                    className="hi"
+                    onClick={() => {
+                      dispatch(removeProduct(product.id))
+                      dispatch(removeItem(product.id))
+                    }}>
+                    X
+                  </button>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

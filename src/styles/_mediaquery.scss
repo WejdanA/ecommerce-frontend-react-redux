@@ -1,4 +1,4 @@
-@use "base" as *;
+@use 'base' as *;
 /* media query */
 
 @media (max-width: 1200px) {
@@ -16,13 +16,6 @@
 
   .products-container {
     height: fit-content;
-    .product {
-      width: 45%;
-      .product-img {
-        width: 26%;
-        margin-left: 32%;
-      }
-    }
   }
 }
 
@@ -32,11 +25,31 @@
       padding: 4rem 0rem 0rem 4rem;
     }
   }
+
+  .contact {
+    .contact-form {
+      width: 90%;
+    }
+  }
+
+  .upper-header {
+    nav {
+      ul {
+        gap: 1rem;
+        margin-left: 1rem;
+      }
+    }
+  }
 }
 
 @media (max-width: 580px) {
   html {
     font-size: 85%;
+  }
+  .filter,
+  .search,
+  .sort {
+    width: 10rem;
   }
 }
 
@@ -62,11 +75,33 @@
     }
   }
 
-  .reviews-container {
-    height: fit-content;
-    .review {
-      width: 90%;
-      margin-top: 1rem;
+  .product-container {
+    .product {
+      width: 20rem;
+    }
+  }
+
+  .cart {
+    min-height: 90vh;
+    padding: 1rem;
+
+    .cart-item {
+      @include container(row);
+      height: fit-content;
+      justify-content: space-around;
+      align-items: center;
+
+      .cart-item-details {
+        font-size: 70%;
+        width: 3rem;
+      }
+
+      .remove-btn {
+        background-color: red;
+        color: $white-color;
+        border-radius: 0.5rem;
+        border: none;
+      }
     }
   }
 
@@ -81,6 +116,23 @@
 
   .speak-buttons {
     flex-direction: column;
+  }
+  .contact {
+    .contact-form {
+      height: fit-content;
+      font-size: 80%;
+      padding: 1rem;
+
+      .input-groups {
+        flex-direction: column;
+        .input-group {
+          width: 100%;
+          .contact-input {
+            width: 100%;
+          }
+        }
+      }
+    }
   }
 
   .footer {

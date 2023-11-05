@@ -1,3 +1,4 @@
+import { FaCartShopping } from 'react-icons/fa6'
 import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 
@@ -22,6 +23,7 @@ import { OrdersManager } from '../admin/orders/OrdersManager'
 import { ProductsManager } from '../admin/products/ProductsManager'
 import { EditProductWrapper } from '../admin/products/EditProductWrapper'
 import { CategoriesManager } from '../admin/categories/CategoriesManager'
+import { Contact } from './Contact'
 
 export const NavBar = () => {
   const dispatch = useDispatch()
@@ -49,7 +51,7 @@ export const NavBar = () => {
                   </li>
                   {loginUser && loginUser.role == 'admin' && (
                     <li>
-                      <Link to="/admin">Admin</Link>
+                      <Link to="/admin">Dashboard</Link>
                     </li>
                   )}
 
@@ -73,12 +75,8 @@ export const NavBar = () => {
             </ul>
           </nav>
           <Link to="/cart">
-            <div id="cart-icon">
-              <img
-                src="..\..\src\images\shopping-cart-outline-svgrepo-com.svg"
-                alt="cart icon"
-                className="cart-icon"
-              />
+            <div id="cart" className="cart-button">
+              <FaCartShopping className="cart-icon" />
               <span className="items-no">{itemsNo}</span>
             </div>
           </Link>
@@ -86,7 +84,8 @@ export const NavBar = () => {
         <Routes>
           <Route path="/" element={<App />} />
 
-          <Route path="/" element={<Products />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/contactUs" element={<Contact />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignUp />} />

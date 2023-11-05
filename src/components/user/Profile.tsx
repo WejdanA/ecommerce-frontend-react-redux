@@ -61,7 +61,6 @@ export function Profile() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold main-content">Edit user</h3>
       <UserForm
         formSubmit={formSubmit}
         handleChange={handleChange}

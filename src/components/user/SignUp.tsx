@@ -52,7 +52,6 @@ export function SignUp() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold main-content">Add a new user</h3>
       <UserForm
         formSubmit={formSubmit}
         handleChange={handleChange}

@@ -39,9 +39,9 @@ export const LoginForm = () => {
   }
 
   return (
-    <div className="main-content">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-control">
+    <div className="main-content contact">
+      <form onSubmit={handleSubmit(onSubmit)} className="contact-form">
+        <div className="input-group">
           <label>Email</label>
           <input
             type="text"
@@ -56,14 +56,16 @@ export const LoginForm = () => {
             name="email"
           />
         </div>
-        <div>{errors.email && <>{errors.email.message}</>}</div>
-        <div className="form-control">
+        <div className="errors">{errors.email && <>{errors.email.message}</>}</div>
+        <div className="input-group">
           <label>Password</label>
           <input type="password" {...register('password', { required: true })} name="password" />
           {errors.password && <span className="error">*The password can't be empty</span>}
         </div>
-        <div className="form-control">
-          <button type="submit">Login</button>
+        <div className="input-group">
+          <button type="submit" className="form-btn">
+            Login
+          </button>
         </div>
         <div>{error}</div>
       </form>

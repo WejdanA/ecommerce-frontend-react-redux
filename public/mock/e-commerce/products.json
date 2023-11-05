@@ -4,6 +4,7 @@
     "name": "Laptop",
     "image": "https://m.media-amazon.com/images/I/81KoSSAwH2L._SL1500_.jpg",
     "description": "High-performance laptop for all your needs.",
+    "price": 3000,
     "categories": [1, 2],
     "variants": ["8GB RAM", "16GB RAM"],
     "sizes": ["13-inch", "15-inch"]
@@ -13,6 +14,7 @@
     "name": "Smartphone",
     "image": "https://m.media-amazon.com/images/I/81SigpJN1KL._SL1500_.jpg",
     "description": "Latest smartphone with advanced features.",
+    "price": 1100,
     "categories": [1, 3],
     "variants": ["64GB", "128GB"],
     "sizes": []
@@ -22,6 +24,7 @@
     "name": "Tablet",
     "image": "https://m.media-amazon.com/images/I/81gC7frRJyL._SL1500_.jpg",
     "description": "Compact and powerful tablet for work and entertainment.",
+    "price": 1500,
     "categories": [1, 2],
     "variants": ["32GB", "64GB"],
     "sizes": ["10-inch", "12-inch"]
@@ -31,6 +34,7 @@
     "name": "Gaming Console",
     "image": "https://m.media-amazon.com/images/I/51wPWj--fAL._SL1000_.jpg",
     "description": "Next-gen gaming console for immersive gameplay.",
+    "price": 2000,
     "categories": [4],
     "variants": ["500GB", "1TB"],
     "sizes": []
@@ -40,6 +44,7 @@
     "name": "Camera",
     "image": "https://m.media-amazon.com/images/I/41zG3lqcEvL._SL1000_.jpg",
     "description": "High-resolution camera for capturing memories.",
+    "price": 1000,
     "categories": [5],
     "variants": ["24MP", "36MP"],
     "sizes": []
@@ -49,6 +54,7 @@
     "name": "Fitness Tracker",
     "image": "https://m.media-amazon.com/images/I/61JL0ccPltL._SL1500_.jpg",
     "description": "Track your health and fitness goals with this smart tracker.",
+    "price": 500,
     "categories": [6],
     "variants": ["Small", "Large"],
     "sizes": []
@@ -58,6 +64,7 @@
     "name": "Home Theater System",
     "image": "https://m.media-amazon.com/images/I/615+VvllX6L._SL1500_.jpg",
     "description": "Create a cinematic experience at home with this system.",
+    "price": 3000,
     "categories": [7],
     "variants": ["5.1 Surround Sound", "7.1 Surround Sound"],
     "sizes": []
@@ -67,6 +74,7 @@
     "name": "Coffee Maker",
     "image": "https://m.media-amazon.com/images/I/51JKNxKS1dL._SL1200_.jpg",
     "description": "Brew your favorite coffee at home with ease.",
+    "price": 700,
     "categories": [8],
     "variants": ["Single Serve", "Drip Coffee Maker"],
     "sizes": []
@@ -76,6 +84,7 @@
     "name": "Bluetooth Speaker",
     "image": "https://m.media-amazon.com/images/I/61N2a48p9xL._SL1200_.jpg",
     "description": "Portable speaker for music on the go.",
+    "price": 300,
     "categories": [9],
     "variants": ["Black", "White"],
     "sizes": []
@@ -85,6 +94,7 @@
     "name": "External Hard Drive",
     "image": "https://m.media-amazon.com/images/I/81pAOJFcsFS._SL1500_.jpg",
     "description": "Store and backup your data with high-capacity storage.",
+    "price": 300,
     "categories": [10],
     "variants": ["1TB", "2TB"],
     "sizes": []
@@ -94,6 +104,7 @@
     "name": "Headphones",
     "image": "https://m.media-amazon.com/images/I/51j7l0QISqL._SL1000_.jpg",
     "description": "Noise-cancelling headphones for immersive audio experience.",
+    "price": 500,
     "categories": [9],
     "variants": ["Over-Ear", "In-Ear"],
     "sizes": []
@@ -103,6 +114,7 @@
     "name": "Smartwatch",
     "image": "https://m.media-amazon.com/images/I/811GOkDSOaL._SL1500_.jpg",
     "description": "Stay connected and track your activities with this smartwatch.",
+    "price": 1000,
     "categories": [6],
     "variants": ["Titanium"],
     "sizes": []

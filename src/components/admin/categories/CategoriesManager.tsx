@@ -1,3 +1,4 @@
+import { Accordion } from 'react-bootstrap'
 import { ChangeEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -52,18 +53,35 @@ export function CategoriesManager() {
       <div id="products" className="products-container">
         {categories.isLoading && <h3> Loading categories...</h3>}
         <div className="card grid gap-4">
-          <form action="submit" onSubmit={handleSubmit(addCategoryHandle)}>
-            <input
-              id="category"
-              {...register('category', { required: true })}
-              name="category"
-              value={categoryName}
-              onChange={(e) => changeCategoryHandle(e)}
-              placeholder="category name"
-            />
-            {errors.category && <span className="error"></span>}
-            <input type="submit" value={btnText + ' category'} />
-          </form>
+          <div className="contact">
+            <div className="local-bootstrap">
+              <Accordion className="admin-form">
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Advanced Search </Accordion.Header>
+                  <Accordion.Body>
+                    <form
+                      action="submit"
+                      onSubmit={handleSubmit(addCategoryHandle)}
+                      className="contact-form category">
+                      <div className="input-group">
+                        <input
+                          id="category"
+                          {...register('category', { required: true })}
+                          name="category"
+                          value={categoryName}
+                          onChange={(e) => changeCategoryHandle(e)}
+                          placeholder="category name"
+                        />
+                        {errors.category && <span className="error"></span>}
+                      </div>
+
+                      <input type="submit" value={btnText + ' category'} className="form-btn" />
+                    </form>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </div>
+          </div>
           <ul>
             {categories.categories.map((category) => (
               <li key={category.id} className="flex items-center gap-4 text-2xl mb-2">
