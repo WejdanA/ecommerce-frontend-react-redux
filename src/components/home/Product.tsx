@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from 'react-toastify'
 import { FaCartPlus, FaRegHeart, FaTag } from 'react-icons/fa6'
 
 import { RootState } from '../../redux/store'
@@ -33,7 +35,10 @@ export const Product = () => {
     }
 
     dispatch(addItem(item))
+    notify()
   }
+
+  const notify = () => toast.success('item was added to cart')
 
   return (
     <>
@@ -123,6 +128,7 @@ export const Product = () => {
           <div className="not-found">Product Not Found</div>
         )}
       </div>
+      <ToastContainer />
     </>
   )
 }

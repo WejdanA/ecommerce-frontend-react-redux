@@ -1,6 +1,8 @@
 import { useState, ChangeEvent } from 'react'
 import { MultiValue } from 'react-select'
 import { SubmitHandler } from 'react-hook-form'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ProductForm } from './ProductForm'
@@ -63,11 +65,14 @@ export function NewProductWrapper() {
     })
   }
 
+  const notify = () => toast.success('product was created')
+
   const formSubmit: SubmitHandler<Inputs> = () => {
     product.id = +new Date()
 
     // add product
     dispatch(addProduct(product))
+    notify()
     // Reset the form
     setProduct(initialProductState)
   }
@@ -81,6 +86,7 @@ export function NewProductWrapper() {
         categories={categories}
         formType={'Create Product'}
       />
+      <ToastContainer />
     </div>
   )
 }

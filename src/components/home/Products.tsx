@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from 'react-toastify'
 import { FaCartPlus, FaRegHeart, FaTag } from 'react-icons/fa6'
 
 import { addItem } from '../../redux/slices/cartSlice'
@@ -25,7 +27,10 @@ export function Products() {
     }
 
     dispatch(addItem(item))
+    notify()
   }
+
+  const notify = () => toast.success('item was added to cart')
 
   // pagination
   const indexOfLastItem = currentPage * itemsPerPage
@@ -103,6 +108,7 @@ export function Products() {
           next
         </button>
       </div>
+      <ToastContainer />
     </>
   )
 }

@@ -15,6 +15,7 @@ import { Profile } from '../user/Profile'
 import { LoginForm } from '../user/LoginForm'
 import { ProtectedRoute } from '../user/ProtectedRoute'
 
+import { Contact } from './Contact'
 import { Admin } from '../admin/Admin'
 import { User } from '../admin/users/User'
 import { AdminRoute } from '../admin/AdminRoute'
@@ -23,7 +24,6 @@ import { OrdersManager } from '../admin/orders/OrdersManager'
 import { ProductsManager } from '../admin/products/ProductsManager'
 import { EditProductWrapper } from '../admin/products/EditProductWrapper'
 import { CategoriesManager } from '../admin/categories/CategoriesManager'
-import { Contact } from './Contact'
 
 export const NavBar = () => {
   const dispatch = useDispatch()
@@ -39,7 +39,7 @@ export const NavBar = () => {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link to="/products">Products</Link>
+                <Link to="/">Products</Link>
               </li>
               <li>
                 <Link to="/contactUs">Contact us</Link>
@@ -84,7 +84,7 @@ export const NavBar = () => {
         <Routes>
           <Route path="/" element={<App />} />
 
-          <Route path="/products" element={<Products />} />
+          <Route path="/products" element={<App />} />
           <Route path="/contactUs" element={<Contact />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/login" element={<LoginForm />} />
