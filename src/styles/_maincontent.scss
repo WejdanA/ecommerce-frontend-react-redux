@@ -469,3 +469,59 @@
   justify-content: center;
   -ms-flex-align: center;
 }
+
+//admin dashboers
+.main-content {
+  .admin-bar {
+    @include container(row);
+    justify-content: space-around;
+    align-items: center;
+    color: $background-color;
+    height: 3rem;
+    background-color: $secondary-color;
+    div {
+      color: $background-color;
+      border: 5px $primary-color solid;
+      width: 25%;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      a {
+        @include center;
+
+        color: $background-color;
+      }
+    }
+  }
+}
+
+.main-content {
+  .local-bootstrap {
+    padding: 1rem;
+    .admin-form {
+      background-color: $white-color;
+    }
+    table {
+      background-color: $white-color;
+      border-radius: 5px;
+      box-shadow: -1px 2px 12px -5px rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: -1px 2px 12px -5px rgba(0, 0, 0, 0.5);
+      -moz-box-shadow: -1px 2px 12px -5px rgba(0, 0, 0, 0.5);
+      transition: 0.8s;
+    }
+    .remove-btn {
+      background-color: red;
+      color: $white-color;
+      border-radius: 0.5rem;
+      border: none;
+      margin-left: 2px;
+    }
+    .edit-btn {
+      background-color: $primary-color;
+      color: $white-color;
+      border-radius: 0.5rem;
+      border: none;
+    }
+  }
+}

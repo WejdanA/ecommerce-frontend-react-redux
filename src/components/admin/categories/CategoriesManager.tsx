@@ -53,12 +53,12 @@ export function CategoriesManager() {
       <div id="products" className="products-container">
         {categories.isLoading && <h3> Loading categories...</h3>}
         <div className="card grid gap-4">
-          <div className="contact">
-            <div className="local-bootstrap">
-              <Accordion className="admin-form">
-                <Accordion.Item eventKey="0">
-                  <Accordion.Header>Advanced Search </Accordion.Header>
-                  <Accordion.Body>
+          <div className="local-bootstrap">
+            <Accordion className="admin-form">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>addCategory</Accordion.Header>
+                <Accordion.Body>
+                  <div className="contact">
                     <form
                       action="submit"
                       onSubmit={handleSubmit(addCategoryHandle)}
@@ -77,32 +77,50 @@ export function CategoriesManager() {
 
                       <input type="submit" value={btnText + ' category'} className="form-btn" />
                     </form>
-                  </Accordion.Body>
-                </Accordion.Item>
-              </Accordion>
-            </div>
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
           </div>
-          <ul>
-            {categories.categories.map((category) => (
-              <li key={category.id} className="flex items-center gap-4 text-2xl mb-2">
-                <div className="name">{category.name}</div>
+          <div className="local-bootstrap">
+            <table className=" table table-stripe">
+              <thead className="thead-dark">
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">name</th>
+                  <th scope="col">edit</th>
+                  <th scope="col">delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {' '}
+                {categories.categories.map((category) => (
+                  <tr key={category.id}>
+                    <td>category.id</td>
+                    <td>{category.name}</td>
 
-                <button
-                  className=" text-red-400 text-xs"
-                  onClick={() => editCategoryHandle(category.id, category.name)}>
-                  Edit
-                </button>
+                    <td>
+                      <button
+                        className=" edit-btn"
+                        onClick={() => editCategoryHandle(category.id, category.name)}>
+                        Edit
+                      </button>
+                    </td>
 
-                <button
-                  className=" text-red-400 text-xs"
-                  onClick={() => {
-                    dispatch(removeCategory(category.id))
-                  }}>
-                  X
-                </button>
-              </li>
-            ))}
-          </ul>
+                    <td>
+                      <button
+                        className=" remove-btn"
+                        onClick={() => {
+                          dispatch(removeCategory(category.id))
+                        }}>
+                        X
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

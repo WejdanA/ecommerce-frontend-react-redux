@@ -16,7 +16,7 @@ export function ProductsManager() {
   return (
     <div className="main-content">
       <Admin />
-      <div className="main main-content">
+      <div className="">
         <div className="local-bootstrap">
           <Accordion className="admin-form">
             <Accordion.Item eventKey="0">
@@ -55,17 +55,19 @@ export function ProductsManager() {
                   </td>
                   <td>{product.variants.join(',')}</td>
                   <td>{product.sizes.join(',')}</td>
-                  <Link to={`/admin/products/${product.id}`}>
-                    <button className=" ">Edit</button>
-                  </Link>
-                  <button
-                    className="hi"
-                    onClick={() => {
-                      dispatch(removeProduct(product.id))
-                      dispatch(removeItem(product.id))
-                    }}>
-                    X
-                  </button>
+                  <td>
+                    <Link to={`/admin/products/${product.id}`}>
+                      <button className="edit-btn">Edit</button>
+                    </Link>
+                    <button
+                      className="remove-btn"
+                      onClick={() => {
+                        dispatch(removeProduct(product.id))
+                        dispatch(removeItem(product.id))
+                      }}>
+                      X
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -14,37 +14,48 @@ export function UsersManager() {
   return (
     <div className="main-content">
       <Admin />
-      <div className="main-content">
-        {isLoading && <h3> Loading users...</h3>}
-        <div className="users">
-          <ul>
+      {isLoading && <h3> Loading users...</h3>}
+      <div className="local-bootstrap">
+        <table className="table table-stripe">
+          <thead className="thead-dark">
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">first name</th>
+              <th scope="col">last name</th>
+              <th scope="col">email</th>
+              <th scope="col">operations</th>
+            </tr>
+          </thead>
+          <tbody>
             {users.map((user) => (
-              <li key={user.id} className="user-details">
-                <span>{user.firstName}</span>
-                <span>{user.lastName}</span>
-                <Link to={`/admin/users/${user.id}`}>
-                  <button className=" ">More Details</button>
-                </Link>
+              <tr key={user.id} className="user-details">
+                <td>{user.id}</td>
+                <td>{user.firstName}</td>
+                <td>{user.lastName}</td>
+                <td>{user.email}</td>
 
-                <button className="block-btn" onClick={(e) => dispatch(block(user.id))}>
-                  {user.isBlocked ? 'unBlock' : 'Block'}
-                </button>
-
-                <select
-                  name="role"
-                  id="role"
-                  defaultValue={user.role}
-                  onClick={(e) => dispatch(updateRole({ userId: user.id, role: e.target.value }))}>
-                  <option value="visitor">visitor</option>
-                  <option value="admin">admin</option>
-                </select>
-                <button className="delete-btn" onClick={() => dispatch(removeUser(user.id))}>
-                  X
-                </button>
-              </li>
+                <td>
+                  <button className="block-btn" onClick={(e) => dispatch(block(user.id))}>
+                    {user.isBlocked ? 'unBlock' : 'Block'}
+                  </button>
+                  <select
+                    name="role"
+                    id="role"
+                    defaultValue={user.role}
+                    onClick={(e) =>
+                      dispatch(updateRole({ userId: user.id, role: e.target.value }))
+                    }>
+                    <option value="visitor">visitor</option>
+                    <option value="admin">admin</option>
+                  </select>
+                  <button className="remove-btn" onClick={() => dispatch(removeUser(user.id))}>
+                    X
+                  </button>
+                </td>
+              </tr>
             ))}
-          </ul>
-        </div>
+          </tbody>
+        </table>
       </div>
     </div>
   )

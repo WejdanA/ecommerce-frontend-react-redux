@@ -24,20 +24,31 @@ export function Orders({ orders }: OrdersPropsType) {
 
   return (
     <div className="main-content">
-      <div id="products" className="products-container">
-        <div className="card grid gap-4">
-          <ul>
+      <div className="local-bootstrap">
+        <table className="table table-stripe">
+          <thead className="thead-dark">
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">product id</th>
+              <th scope="col">product</th>
+              <th scope="col">user id</th>
+              <th scope="col">user </th>
+              <th scope="col">purchased At</th>
+            </tr>
+          </thead>
+          <tbody>
             {orders.map((order) => (
-              <li key={order.id} className="flex items-center gap-4 text-2xl mb-2">
-                <span>{order.productId}</span>
-                <span>{getProductName(order.productId)}</span>
-                <span>{order.userId}</span>
-                <span>{getUserName(order.userId)}</span>
-                <span>{order.purchasedAt + ''}</span>
-              </li>
+              <tr key={order.id} className="flex items-center gap-4 text-2xl mb-2">
+                <td>{order.id}</td>
+                <td>{order.productId}</td>
+                <td>{getProductName(order.productId)}</td>
+                <td>{order.userId}</td>
+                <td>{getUserName(order.userId)}</td>
+                <td>{order.purchasedAt + ''}</td>
+              </tr>
             ))}
-          </ul>
-        </div>
+          </tbody>
+        </table>
       </div>
     </div>
   )

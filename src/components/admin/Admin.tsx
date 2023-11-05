@@ -3,8 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 export const Admin = () => {
   return (
     <div className="main-content">
-      <h1> admin page</h1>
-      <div className="side-bar">
+      <div className="admin-bar">
         <div>
           <Link to="/admin/products">Products</Link>
         </div>
