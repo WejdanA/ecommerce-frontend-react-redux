@@ -8,7 +8,7 @@ import { getUserById, UserType } from '../../../redux/slices/userSlice'
 export const User = () => {
   const { id } = useParams()
 
-  const user: UserType = useSelector((state: RootState) => state.users.user)
+  const { user } = useSelector((state: RootState) => state.users)
 
   const dispatch = useDispatch()
 

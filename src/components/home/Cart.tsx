@@ -14,7 +14,6 @@ export const Cart = () => {
   const products = useSelector((state: RootState) => state.products.products)
   const { isLogin, loginUser } = useSelector((state: RootState) => state.users)
   const dispatch = useDispatch()
-  // const [totalPrice, setTotalPrice] = useState(0)
 
   let product: ProductType | undefined
   const findItemDetails = (productId: number) => {
@@ -31,22 +30,20 @@ export const Cart = () => {
     dispatch(editQuantity({ itemProductId, quantity }))
   }
   const getTotalPrice = () => {
-    let totalPrice = 0
-    items.map((item) => (totalPrice += item.price * item.quantity))
-    return totalPrice
+    return items.reduce((total, item) => total + item.price * item.quantity, 0)
   }
 
   const addOrderHandle = () => {
-    items.map((item) =>
-      dispatch(
-        addOrder({
-          id: +new Date(),
-          productId: item.productId,
-          userId: loginUser?.id,
-          purchasedAt: new Date()
-        })
-      )
-    )
+    items.map((item) => {
+      let orders = []
+      orders.push({
+        id: +new Date(),
+        productId: item.productId,
+        userId: loginUser?.id,
+        purchasedAt: new Date()
+      })
+      dispatch(addOrder(orders))
+    })
     dispatch(clearCart())
     navigate('/user/profile')
   }
