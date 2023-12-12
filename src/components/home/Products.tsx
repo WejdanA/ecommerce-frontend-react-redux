@@ -86,11 +86,11 @@ export function Products() {
                   </button>
                 </div>
               </div>
-              <p className="options">
+              {/* <p className="options">
                 {product.sizes[0]}
                 {product.sizes[0] && ', '}
                 {product.variants[0]}
-              </p>
+              </p> */}
 
               <Link to={`/product/${product.id}`}>
                 <button className="button product-btn more-btn">More Options</button>

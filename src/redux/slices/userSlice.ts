@@ -9,6 +9,7 @@ export type UserType = {
   role: string
   isBlocked: boolean
 }
+export type UserInputType = Omit<UserType, 'id'>
 
 export type UserState = {
   users: UserType[]
@@ -37,7 +38,7 @@ export const userSlice = createSlice({
     },
     usersSuccess: (state, action) => {
       state.isLoading = false
-      state.users = action.payload
+      state.users = action.payload.allUsers
     },
     addUser: (state, action) => {
       const user = action.payload

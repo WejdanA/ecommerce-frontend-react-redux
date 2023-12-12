@@ -73,7 +73,7 @@ export const Product = () => {
                 {product.description}
               </div>
 
-              <div id="variants">
+              {/* <div id="variants">
                 variants:
                 <select name="variants" id="">
                   {product.variants && product.variants.length ? (
@@ -101,7 +101,7 @@ export const Product = () => {
                     <option value="one size">one size</option>
                   )}
                 </select>
-              </div>
+              </div> */}
 
               <div className="buy">
                 <div className="price">

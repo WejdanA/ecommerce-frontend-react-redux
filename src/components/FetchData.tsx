@@ -12,32 +12,34 @@ export const FetchData = () => {
 
   const handleGetProducts = async () => {
     dispatch(productsRequest())
-    const res = await api.get('/mock/e-commerce/products.json')
+    const res = await api.get('/products')
     dispatch(productsSuccess(res.data))
+    console.log('products in products manger', res.data)
   }
 
   const handleGetCategories = async () => {
     dispatch(categoriesRequest())
-    const res = await api.get('/mock/e-commerce/categories.json')
+    const res = await api.get('/categories')
     dispatch(categoriesSuccess(res.data))
   }
   const handleGetOrders = async () => {
     dispatch(ordersRequest())
-    const res = await api.get('/mock/e-commerce/orders.json')
+    const res = await api.get('/orders')
     dispatch(ordersSuccess(res.data))
   }
 
   const handleGetUsers = async () => {
     dispatch(usersRequest())
-    const res = await api.get('/mock/e-commerce/users.json')
+    const res = await api.get('/users')
     dispatch(usersSuccess(res.data))
+    console.log('users in user manger', res.data)
   }
 
   useEffect(() => {
     handleGetProducts()
-    handleGetCategories()
+    // handleGetCategories()
     handleGetUsers()
-    handleGetOrders()
+    // handleGetOrders()
   }, [])
 
   return <div></div>

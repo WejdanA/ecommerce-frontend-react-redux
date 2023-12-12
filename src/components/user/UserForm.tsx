@@ -1,12 +1,12 @@
 import { ChangeEvent } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
-import { UserType } from '../../redux/slices/userSlice'
+import { UserInputType, UserType } from '../../redux/slices/userSlice'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 
 type UserFormProps = {
-  newUser: UserType
+  newUser: UserInputType
   formType: string
   formSubmit: SubmitHandler<Inputs>
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => void
@@ -33,13 +33,13 @@ export function UserForm({ newUser, formType, formSubmit, handleChange }: UserFo
       password: newUser.password
     }
   })
-  const checkEmail = () => {
-    const duplicatedUser = users.find((user) => user.email == newUser.email)
-    if (duplicatedUser && duplicatedUser.id != newUser.id) {
-      return 'The email already exit'
-    }
-    return true
-  }
+  // const checkEmail = () => {
+  //   const duplicatedUser = users.find((user) => user.email == newUser.email)
+  //   if (duplicatedUser && duplicatedUser.id != newUser.id) {
+  //     return 'The email already exit'
+  //   }
+  //   return true
+  // }
 
   const inputStyle = 'contact-input'
   const labelStyle = 'block text-sm font-medium text-gray-600'
@@ -87,8 +87,8 @@ export function UserForm({ newUser, formType, formSubmit, handleChange }: UserFo
               pattern: {
                 value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
                 message: '*Please, Enter valid email'
-              },
-              validate: { value: checkEmail }
+              }
+              // validate: { value: checkEmail }
             })}
             onChange={handleChange}
             className={inputStyle}
@@ -110,7 +110,7 @@ export function UserForm({ newUser, formType, formSubmit, handleChange }: UserFo
         </div>
 
         <button type="submit" className="form-btn">
-          {formType} User
+          {formType}
         </button>
       </form>
     </section>

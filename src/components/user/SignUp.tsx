@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { SubmitHandler } from 'react-hook-form'
 
 import { AppDispatch, RootState } from '../../redux/store'
-import { addUser, UserType } from '../../redux/slices/userSlice'
+import { addUser, UserInputType } from '../../redux/slices/userSlice'
 
 import { UserForm } from './UserForm'
+import api from '../../api'
 
-const initialUserState: UserType = {
-  id: 0,
+const initialUserState: UserInputType = {
   firstName: '',
   lastName: '',
   email: '',
@@ -22,7 +22,7 @@ export function SignUp() {
   const dispatch = useDispatch<AppDispatch>()
   const naigate = useNavigate()
 
-  const [user, setUser] = useState<UserType>(initialUserState)
+  const [user, setUser] = useState<UserInputType>(initialUserState)
 
   type Inputs = {
     firstName: string
@@ -40,14 +40,13 @@ export function SignUp() {
     })
   }
 
-  const formSubmit: SubmitHandler<Inputs> = (data) => {
-    user.id = +new Date()
+  const formSubmit: SubmitHandler<Inputs> = async () => {
     console.log('data', user)
     // add user
-    dispatch(addUser(user))
+    // dispatch(addUser(user))
+    const { data } = await api.post('/users/register', user)
     // Reset the form
     setUser(initialUserState)
-    naigate('/login')
   }
 
   return (
@@ -56,7 +55,7 @@ export function SignUp() {
         formSubmit={formSubmit}
         handleChange={handleChange}
         newUser={user}
-        formType={'Add'}
+        formType={'Sign Up'}
       />
     </div>
   )

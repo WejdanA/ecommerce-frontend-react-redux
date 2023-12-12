@@ -10,7 +10,7 @@ import { Admin } from '../Admin'
 export function UsersManager() {
   const dispatch = useDispatch<AppDispatch>()
   const { users, isLoading } = useSelector((state: RootState) => state.users)
-
+  console.log('users in user manger', users)
   return (
     <div className="main-content">
       <Admin />

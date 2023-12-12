@@ -37,8 +37,8 @@ export const productSlice = createSlice({
 
     productsSuccess: (state, action) => {
       state.isLoading = false
-      state.fetchedProducts = action.payload
-      state.products = action.payload
+      state.fetchedProducts = action.payload.allProducts
+      state.products = action.payload.allProducts
     },
 
     addProduct: (state, action) => {
