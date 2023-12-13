@@ -5,7 +5,6 @@ import api from '../api'
 import { AppDispatch, RootState } from '../redux/store'
 import { productsRequest, productsSuccess } from '../redux/slices/productSlice'
 import { categoriesRequest, categoriesSuccess } from '../redux/slices/categorySlice'
-import { usersRequest, usersSuccess } from '../redux/slices/userSlice'
 import { ordersRequest, ordersSuccess } from '../redux/slices/orderSlice'
 export const FetchData = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -28,17 +27,10 @@ export const FetchData = () => {
     dispatch(ordersSuccess(res.data))
   }
 
-  const handleGetUsers = async () => {
-    dispatch(usersRequest())
-    const res = await api.get('/users')
-    dispatch(usersSuccess(res.data))
-    console.log('users in user manger', res.data)
-  }
-
   useEffect(() => {
     handleGetProducts()
     // handleGetCategories()
-    handleGetUsers()
+
     // handleGetOrders()
   }, [])
 

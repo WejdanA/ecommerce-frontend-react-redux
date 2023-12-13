@@ -6,5 +6,5 @@ import { LoginForm } from '../user/LoginForm'
 export const AdminRoute = () => {
   const { isLogin, loginUser } = useSelector((state: RootState) => state.users)
 
-  return isLogin && loginUser?.role === 'admin' ? <Outlet /> : <LoginForm />
+  return isLogin && loginUser?.isAdmin ? <Outlet /> : <LoginForm />
 }

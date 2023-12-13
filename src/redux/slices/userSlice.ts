@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export type UserType = {
-  id: number
+  _id: string
   firstName: string
   lastName: string
   email: string
   password: string
-  role: string
-  isBlocked: boolean
+  isAdmin: boolean
+  isBanned: boolean
 }
 export type UserInputType = Omit<UserType, 'id'>
 
@@ -47,7 +47,7 @@ export const userSlice = createSlice({
     editUser: (state, action) => {
       const editedUser = action.payload
       const updatedUsers = state.users.map((user) => {
-        if (user.id == editedUser.id) {
+        if (user._id == editedUser.id) {
           return editedUser
         }
         return user
@@ -57,25 +57,25 @@ export const userSlice = createSlice({
     },
     removeUser: (state, action) => {
       const userId = action.payload
-      state.users = state.users.filter((user) => user.id !== userId)
+      state.users = state.users.filter((user) => user._id !== userId)
     },
     getUserById: (state, action) => {
-      state.user = state.users.find((user) => user.id == action.payload)
+      state.user = state.users.find((user) => user._id == action.payload)
     },
     block: (state, action) => {
       const userId = action.payload
       const updatedBlock = state.users.map((user) => {
-        if (user.id == userId) {
-          user.isBlocked = !user.isBlocked
+        if (user._id == userId) {
+          user.isBanned = !user.isBanned
         }
       })
     },
 
     updateRole: (state, action) => {
-      const { userId, role } = action.payload
+      const { userId, isAdmin } = action.payload
       const updatedRole = state.users.map((user) => {
-        if (user.id == userId) {
-          user.role = role
+        if (user._id == userId) {
+          user.isAdmin = !isAdmin
         }
       })
     },

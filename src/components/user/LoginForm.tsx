@@ -4,14 +4,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { login } from '../../redux/slices/userSlice'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
+
+import api from '../../api'
+
+type UserInfo = {
+  email: string
+  password: string
+}
 
 export const LoginForm = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-
-  const { users } = useSelector((state: RootState) => state.users)
-
-  const [error, setError] = useState('')
 
   const {
     register,
@@ -19,24 +23,21 @@ export const LoginForm = () => {
     formState: { errors }
   } = useForm()
 
-  const onSubmit = (data) => {
-    const currentUser = users.find(
-      (user) => user.email == data.email && user.password == data.password
-    )
-
-    if (currentUser) {
-      if (currentUser.isBlocked) {
-        setError('Sorry,you are blocked please contact 123-123-1234 for more information')
-        return
-      } else {
-        dispatch(login(currentUser))
-        navigate('/')
-      }
-    } else {
-      console.log('invalid data')
-      setError('The email or the password are invalid. try again')
+  const onSubmit = async (userInfo) => {
+    try {
+      const { data } = await api.post('auth/login', userInfo)
+      dispatch(login(data.user))
+      const message = data.message
+      console.log('data', data)
+      notifySuccess()
+    } catch (error: any) {
+      console.log('error', error.response.data.msg)
+      notifyError(error.response.data.msg)
     }
   }
+
+  const notifySuccess = () => toast.success('you logged successfully')
+  const notifyError = (message: string) => toast.error(message)
 
   return (
     <div className="main-content contact">
@@ -67,7 +68,7 @@ export const LoginForm = () => {
             Login
           </button>
         </div>
-        <div>{error}</div>
+        <ToastContainer />
       </form>
     </div>
   )

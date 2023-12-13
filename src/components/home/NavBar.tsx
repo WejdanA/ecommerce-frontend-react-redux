@@ -13,7 +13,7 @@ import { Products } from './Products'
 import { SignUp } from '../user/SignUp'
 import { Profile } from '../user/Profile'
 import { LoginForm } from '../user/LoginForm'
-// import { ProtectedRoute } from '../user/ProtectedRoute'
+import { ProtectedRoute } from '../user/ProtectedRoute'
 
 import { Contact } from './Contact'
 import { Admin } from '../admin/Admin'
@@ -25,6 +25,7 @@ import { ProductsManager } from '../admin/products/ProductsManager'
 import { EditProductWrapper } from '../admin/products/EditProductWrapper'
 import { CategoriesManager } from '../admin/categories/CategoriesManager'
 import { ActivateAccount } from '../user/ActivateAccount'
+import { Logout } from '../user/Logout'
 
 export const NavBar = () => {
   const dispatch = useDispatch()
@@ -45,32 +46,32 @@ export const NavBar = () => {
               <li>
                 <Link to="/contactUs">Contact us</Link>
               </li>
-              (
-              <>
-                <li>
-                  <Link to="/user/profile">Profile</Link>
-                </li>
-                (
-                <li>
-                  <Link to="/admin">Dashboard</Link>
-                </li>
-                )
-                <li>
-                  <Link to="/login" onClick={() => dispatch(logout())}>
-                    logout
-                  </Link>
-                </li>
-              </>
-              ) (
-              <>
-                <li>
-                  <Link to="/login">login</Link>
-                </li>
-                <li>
-                  <Link to="/signup">Sign up</Link>
-                </li>
-              </>
-              )
+              {isLogin && (
+                <>
+                  <li>
+                    <Link to="/user/profile">Profile</Link>
+                  </li>
+                  {loginUser && loginUser.isAdmin && (
+                    <li>
+                      <Link to="/admin">Dashboard</Link>
+                    </li>
+                  )}
+
+                  <li>
+                    <Link to="/logout">logout</Link>
+                  </li>
+                </>
+              )}
+              {!isLogin && (
+                <>
+                  <li>
+                    <Link to="/login">login</Link>
+                  </li>
+                  <li>
+                    <Link to="/signup">Sign up</Link>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
           <Link to="/cart">
@@ -87,23 +88,24 @@ export const NavBar = () => {
           <Route path="/contactUs" element={<Contact />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="users/activate" element={<ActivateAccount />} />
+          <Route path="/users/activate" element={<ActivateAccount />} />
           <Route path="/cart" element={<Cart />} />
 
-          {/* <Route path="/user" element={<ProtectedRoute />}> */}
-          <Route path="/user/profile" element={<Profile />} />
-          {/* </Route> */}
+          <Route path="/user" element={<ProtectedRoute />}>
+            <Route path="/user/profile" element={<Profile />} />
+          </Route>
 
-          {/* <Route path="/admin" element={<AdminRoute />}> */}
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/products" element={<ProductsManager />} />
-          <Route path="/admin/products/:id" element={<EditProductWrapper />} />
-          <Route path="/admin/categories" element={<CategoriesManager />} />
-          <Route path="/admin/users" element={<UsersManager />} />
-          <Route path="/admin/users/:id" element={<User />} />
-          <Route path="/admin/orders" element={<OrdersManager />} />
-          {/* </Route> */}
+          <Route path="/admin" element={<AdminRoute />}>
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/products" element={<ProductsManager />} />
+            <Route path="/admin/products/:id" element={<EditProductWrapper />} />
+            <Route path="/admin/categories" element={<CategoriesManager />} />
+            <Route path="/admin/users" element={<UsersManager />} />
+            <Route path="/admin/users/:id" element={<User />} />
+            <Route path="/admin/orders" element={<OrdersManager />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </>
