@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { RootState } from '../../../redux/store'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getUserById, UserType } from '../../../redux/slices/userSlice'
+import { UserType } from '../../../redux/slices/userSlice'
 
 export const User = () => {
   const { id } = useParams()
@@ -12,16 +12,14 @@ export const User = () => {
 
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getUserById(id))
-  }, [id])
+  useEffect(() => {}, [id])
 
   return (
     <>
       {user ? (
         <div className="main-content">
           <div id="id" className="user-details">
-            {user.id}
+            {user._id}
           </div>
           <div id="first-name" className="user-details">
             {user.firstName}
@@ -37,7 +35,7 @@ export const User = () => {
             {user.password}
           </div>
           <div id="role" className="user-details">
-            {user.role}
+            {user.isAdmin}
           </div>
         </div>
       ) : (

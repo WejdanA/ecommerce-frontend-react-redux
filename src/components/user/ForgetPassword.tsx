@@ -1,18 +1,16 @@
 import { useForm } from 'react-hook-form'
+import { SubmitHandler } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { login } from '../../redux/slices/userSlice'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 
 import api from '../../api'
 
-type UserInfo = {
+type Inputs = {
   email: string
-  password: string
 }
 
-export const LoginForm = () => {
+export const ForgetPassword = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -20,21 +18,19 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm()
+  } = useForm<Inputs>()
 
-  const onSubmit = async (userInfo) => {
+  const onSubmit: SubmitHandler<Inputs> = async (email) => {
     try {
-      const { data } = await api.post('auth/login', userInfo)
-      const { password, ...user } = data.user
+      const { data } = await api.post('users/forget-password', email)
 
-      dispatch(login(user))
-      notifySuccess()
+      notifySuccess(data.message)
     } catch (error: any) {
       notifyError(error.response.data.msg)
     }
   }
 
-  const notifySuccess = () => toast.success('you logged successfully')
+  const notifySuccess = (message: string) => toast.success(message)
   const notifyError = (message: string) => toast.error(message)
 
   return (
@@ -56,17 +52,12 @@ export const LoginForm = () => {
           />
         </div>
         <div className="errors">{errors.email && <>{errors.email.message}</>}</div>
-        <div className="input-group">
-          <label>Password</label>
-          <input type="password" {...register('password', { required: true })} name="password" />
-          {errors.password && <span className="error">*The password can't be empty</span>}
-        </div>
+
         <div className="input-group">
           <button type="submit" className="form-btn">
-            Login
+            verify email
           </button>
         </div>
-        <Link to="/forget-password">Forget password ?</Link>
         <ToastContainer />
       </form>
     </div>

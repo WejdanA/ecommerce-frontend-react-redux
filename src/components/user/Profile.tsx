@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import { SubmitHandler } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useState, ChangeEvent, useEffect } from 'react'
@@ -9,7 +8,6 @@ import { ToastContainer, toast } from 'react-toastify'
 import api from '../../api'
 import { UserForm } from './UserForm'
 import { fetchUserData, UserType } from '../../redux/slices/userSlice'
-import { getOrdersByUser } from '../../redux/slices/orderSlice'
 import { AppDispatch, RootState } from '../../redux/store'
 import { Orders } from '../admin/orders/Orders'
 

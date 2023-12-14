@@ -24,6 +24,8 @@ import { ProductsManager } from '../admin/products/ProductsManager'
 import { User } from '../admin/users/User'
 import { UsersManager } from '../admin/users/UsersManager'
 import { Contact } from './Contact'
+import { ResetPassword } from '../user/ResetPassword'
+import { ForgetPassword } from '../user/ForgetPassword'
 
 export const NavBar = () => {
   const dispatch = useDispatch()
@@ -86,6 +88,8 @@ export const NavBar = () => {
           <Route path="/contactUs" element={<Contact />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/users/activate" element={<ActivateAccount />} />
