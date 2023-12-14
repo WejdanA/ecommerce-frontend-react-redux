@@ -27,11 +27,8 @@ export const LoginForm = () => {
     try {
       const { data } = await api.post('auth/login', userInfo)
       dispatch(login(data.user))
-      const message = data.message
-      console.log('data', data)
       notifySuccess()
     } catch (error: any) {
-      console.log('error', error.response.data.msg)
       notifyError(error.response.data.msg)
     }
   }

@@ -1,31 +1,29 @@
 import { FaCartShopping } from 'react-icons/fa6'
 import { useDispatch, useSelector } from 'react-redux'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 
 import { RootState } from '../../redux/store'
-import { logout } from '../../redux/slices/userSlice'
 
 import App from '../../App'
-import { Product } from './Product'
 import { Cart } from './Cart'
-import { Products } from './Products'
+import { Product } from './Product'
 
-import { SignUp } from '../user/SignUp'
-import { Profile } from '../user/Profile'
-import { LoginForm } from '../user/LoginForm'
-import { ProtectedRoute } from '../user/ProtectedRoute'
-
-import { Contact } from './Contact'
-import { Admin } from '../admin/Admin'
-import { User } from '../admin/users/User'
-import { AdminRoute } from '../admin/AdminRoute'
-import { UsersManager } from '../admin/users/UsersManager'
-import { OrdersManager } from '../admin/orders/OrdersManager'
-import { ProductsManager } from '../admin/products/ProductsManager'
-import { EditProductWrapper } from '../admin/products/EditProductWrapper'
-import { CategoriesManager } from '../admin/categories/CategoriesManager'
 import { ActivateAccount } from '../user/ActivateAccount'
+import { LoginForm } from '../user/LoginForm'
 import { Logout } from '../user/Logout'
+import { Profile } from '../user/Profile'
+import { ProtectedRoute } from '../user/ProtectedRoute'
+import { SignUp } from '../user/SignUp'
+
+import { Admin } from '../admin/Admin'
+import { AdminRoute } from '../admin/AdminRoute'
+import { CategoriesManager } from '../admin/categories/CategoriesManager'
+import { OrdersManager } from '../admin/orders/OrdersManager'
+import { EditProductWrapper } from '../admin/products/EditProductWrapper'
+import { ProductsManager } from '../admin/products/ProductsManager'
+import { User } from '../admin/users/User'
+import { UsersManager } from '../admin/users/UsersManager'
+import { Contact } from './Contact'
 
 export const NavBar = () => {
   const dispatch = useDispatch()

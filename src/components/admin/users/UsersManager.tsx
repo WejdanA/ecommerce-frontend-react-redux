@@ -1,14 +1,17 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { removeUser, updateRole, block } from '../../../redux/slices/userSlice'
-
 import { AppDispatch, RootState } from '../../../redux/store'
 
-import { Link } from 'react-router-dom'
 import api from '../../../api'
 import { Admin } from '../Admin'
-import { usersRequest, usersSuccess } from '../../../redux/slices/userSlice'
+import {
+  usersRequest,
+  usersSuccess,
+  removeUser,
+  updateRole,
+  block
+} from '../../../redux/slices/userSlice'
 
 export function UsersManager() {
   const dispatch = useDispatch<AppDispatch>()
@@ -17,9 +20,8 @@ export function UsersManager() {
 
   const handleGetUsers = async () => {
     dispatch(usersRequest())
-    const res = await api.get('/users')
-    dispatch(usersSuccess(res.data))
-    console.log('users in user manger', res.data)
+    const { data } = await api.get('/users')
+    dispatch(usersSuccess(data))
   }
 
   useEffect(() => {

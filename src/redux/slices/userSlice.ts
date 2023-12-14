@@ -9,7 +9,7 @@ export type UserType = {
   isAdmin: boolean
   isBanned: boolean
 }
-export type UserInputType = Omit<UserType, 'id'>
+export type UserInputType = Omit<UserType, '_id'>
 
 export type UserState = {
   users: UserType[]
@@ -39,10 +39,6 @@ export const userSlice = createSlice({
     usersSuccess: (state, action) => {
       state.isLoading = false
       state.users = action.payload.allUsers
-    },
-    addUser: (state, action) => {
-      const user = action.payload
-      state.users = [user, ...state.users]
     },
     editUser: (state, action) => {
       const editedUser = action.payload
@@ -97,7 +93,6 @@ export const {
   getUserById,
   block,
   updateRole,
-  addUser,
   editUser,
   login,
   logout

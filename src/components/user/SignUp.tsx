@@ -3,25 +3,23 @@ import { useState, ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SubmitHandler } from 'react-hook-form'
 
-import { AppDispatch, RootState } from '../../redux/store'
-import { addUser, UserInputType } from '../../redux/slices/userSlice'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from 'react-toastify'
 
-import { UserForm } from './UserForm'
 import api from '../../api'
+import { UserForm } from './UserForm'
+import { UserInputType } from '../../redux/slices/userSlice'
 
 const initialUserState: UserInputType = {
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  role: 'visitor',
-  isBlocked: false
+  isAdmin: false,
+  isBanned: true
 }
 
 export function SignUp() {
-  const dispatch = useDispatch<AppDispatch>()
-  const naigate = useNavigate()
-
   const [user, setUser] = useState<UserInputType>(initialUserState)
 
   type Inputs = {
@@ -41,14 +39,17 @@ export function SignUp() {
   }
 
   const formSubmit: SubmitHandler<Inputs> = async () => {
-    console.log('data', user)
-    // add user
-    // dispatch(addUser(user))
-    const { data } = await api.post('/users/register', user)
-    // Reset the form
-    setUser(initialUserState)
+    try {
+      const { data } = await api.post('/users/register', user)
+      notifySuccess()
+      setUser(initialUserState)
+    } catch (error: any) {
+      notifyError(error.response.data.msg)
+    }
   }
-
+  const notifySuccess = () =>
+    toast.success('your account was registered successfuly, please check your email for activation')
+  const notifyError = (message: string) => toast.error(message + '. please try again')
   return (
     <div>
       <UserForm
