@@ -32,12 +32,10 @@ const initialState: UserState = {
 }
 
 export const fetchUsersData = createAsyncThunk('./users/fetchUsers', async () => {
-  console.log('in slice')
-
   const { data } = await api.get('/users')
-  console.log('datat in create', data)
   return data.allUsers
 })
+
 export const fetchUserData = createAsyncThunk('./user/fetchUser', async () => {
   const { data } = await api.get(`users/profile`)
 
@@ -54,21 +52,6 @@ export const userSlice = createSlice({
     usersSuccess: (state, action) => {
       state.isLoading = false
       state.users = action.payload.allUsers
-    },
-    editUser: (state, action) => {
-      const editedUser = action.payload
-      const updatedUsers = state.users.map((user) => {
-        if (user._id == editedUser.id) {
-          return editedUser
-        }
-        return user
-      })
-      state.users = updatedUsers
-      state.loginUser = editedUser
-    },
-
-    getUserById: (state, action) => {
-      state.user = state.users.find((user) => user._id == action.payload)
     },
 
     login: (state, action) => {
@@ -107,7 +90,6 @@ export const userSlice = createSlice({
       })
   }
 })
-export const { usersRequest, usersSuccess, getUserById, updateRole, editUser, login, logout } =
-  userSlice.actions
+export const { usersRequest, usersSuccess, login, logout } = userSlice.actions
 
 export default userSlice.reducer

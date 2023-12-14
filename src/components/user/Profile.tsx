@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify'
 
 import api from '../../api'
 import { UserForm } from './UserForm'
-import { editUser, fetchUserData, UserInputType, UserType } from '../../redux/slices/userSlice'
+import { fetchUserData, UserType } from '../../redux/slices/userSlice'
 import { getOrdersByUser } from '../../redux/slices/orderSlice'
 import { AppDispatch, RootState } from '../../redux/store'
 import { Orders } from '../admin/orders/Orders'
