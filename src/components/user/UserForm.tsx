@@ -88,19 +88,23 @@ export function UserForm({ newUser, formType, formSubmit, handleChange }: UserFo
           />
           {errors.email && <>{errors.email.message}</>}
         </div>
-        <div className="input-group">
-          <label htmlFor="first-name" className={labelStyle}>
-            password:
-          </label>
-          <input
-            type="text"
-            id="password"
-            {...register('password', { required: true })}
-            onChange={handleChange}
-            className={inputStyle}
-          />
-          {errors.password && <span className="error">*The password can't be empty</span>}
-        </div>
+        {formType == 'Sign Up' ? (
+          <div className="input-group">
+            <label htmlFor="first-name" className={labelStyle}>
+              password:
+            </label>
+            <input
+              type="text"
+              id="password"
+              {...register('password', { required: true })}
+              onChange={handleChange}
+              className={inputStyle}
+            />
+            {errors.password && <span className="error">*The password can't be empty</span>}
+          </div>
+        ) : (
+          ''
+        )}
 
         <button type="submit" className="form-btn">
           {formType}

@@ -3,27 +3,28 @@ import { SubmitHandler } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useState, ChangeEvent, useEffect } from 'react'
 
-import { UserForm } from './UserForm'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from 'react-toastify'
 
-import { editUser, UserType } from '../../redux/slices/userSlice'
+import api from '../../api'
+import { UserForm } from './UserForm'
+import { editUser, fetchUserData, UserInputType, UserType } from '../../redux/slices/userSlice'
 import { getOrdersByUser } from '../../redux/slices/orderSlice'
 import { AppDispatch, RootState } from '../../redux/store'
 import { Orders } from '../admin/orders/Orders'
 
 const initialUserState: UserType = {
-  id: 0,
+  _id: '',
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  role: 'visitor',
-  isBlocked: false
+  isAdmin: false,
+  isBanned: false
 }
 
 export function Profile() {
-  const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
-
   const { loginUser } = useSelector((state: RootState) => state.users)
   const { userOrders } = useSelector((state: RootState) => state.orders)
 
@@ -33,12 +34,10 @@ export function Profile() {
     firstName: string
     lastName: string
     email: string
-    password: string
   }
 
   useEffect(() => {
     setUser(loginUser)
-    dispatch(getOrdersByUser(loginUser?.id))
   }, [loginUser])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
@@ -50,14 +49,18 @@ export function Profile() {
     })
   }
 
-  const formSubmit: SubmitHandler<Inputs> = (data) => {
-    // update the user
-    console.log('user', user)
-    dispatch(editUser(user))
-    // Reset the form
-    setUser(initialUserState)
-    navigate('/')
+  const formSubmit: SubmitHandler<Inputs> = async (user) => {
+    try {
+      const { data } = await api.put('/users/profile', user)
+      dispatch(fetchUserData())
+      notifySuccess()
+    } catch (error: any) {
+      notifyError(error.response.data.msg)
+    }
   }
+
+  const notifySuccess = () => toast.success('your profile was updated successfuly')
+  const notifyError = (message: string) => toast.error(message + '. please try again')
 
   return (
     <div>
@@ -68,6 +71,7 @@ export function Profile() {
         formType={'Update'}
       />
       <Orders orders={userOrders} />.
+      <ToastContainer />
     </div>
   )
 }

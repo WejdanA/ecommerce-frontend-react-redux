@@ -15,8 +15,8 @@ export const ActivateAccount = () => {
   const activateAccountHandle = async (token: string | null) => {
     try {
       const { data } = await api.post('/users/activate', { token })
-      navigate('/login')
       notifySuccess()
+      navigate('/login')
     } catch (error: any) {
       notifyError(error.response.data.msg)
     }

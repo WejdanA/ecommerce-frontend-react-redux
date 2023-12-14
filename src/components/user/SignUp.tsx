@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux'
 import { useState, ChangeEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { SubmitHandler } from 'react-hook-form'
 
 import 'react-toastify/dist/ReactToastify.css'
@@ -58,6 +57,7 @@ export function SignUp() {
         newUser={user}
         formType={'Sign Up'}
       />
+      <ToastContainer />
     </div>
   )
 }

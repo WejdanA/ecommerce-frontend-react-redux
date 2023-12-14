@@ -26,7 +26,9 @@ export const LoginForm = () => {
   const onSubmit = async (userInfo) => {
     try {
       const { data } = await api.post('auth/login', userInfo)
-      dispatch(login(data.user))
+      const { password, ...user } = data.user
+
+      dispatch(login(user))
       notifySuccess()
     } catch (error: any) {
       notifyError(error.response.data.msg)

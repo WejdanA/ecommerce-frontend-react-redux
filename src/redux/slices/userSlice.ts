@@ -1,4 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+
+import api from '../../api'
 
 export type UserType = {
   _id: string
@@ -29,6 +31,19 @@ const initialState: UserState = {
   loginUser: null
 }
 
+export const fetchUsersData = createAsyncThunk('./users/fetchUsers', async () => {
+  console.log('in slice')
+
+  const { data } = await api.get('/users')
+  console.log('datat in create', data)
+  return data.allUsers
+})
+export const fetchUserData = createAsyncThunk('./user/fetchUser', async () => {
+  const { data } = await api.get(`users/profile`)
+
+  return data.user
+})
+
 export const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -51,29 +66,9 @@ export const userSlice = createSlice({
       state.users = updatedUsers
       state.loginUser = editedUser
     },
-    removeUser: (state, action) => {
-      const userId = action.payload
-      state.users = state.users.filter((user) => user._id !== userId)
-    },
+
     getUserById: (state, action) => {
       state.user = state.users.find((user) => user._id == action.payload)
-    },
-    block: (state, action) => {
-      const userId = action.payload
-      const updatedBlock = state.users.map((user) => {
-        if (user._id == userId) {
-          user.isBanned = !user.isBanned
-        }
-      })
-    },
-
-    updateRole: (state, action) => {
-      const { userId, isAdmin } = action.payload
-      const updatedRole = state.users.map((user) => {
-        if (user._id == userId) {
-          user.isAdmin = !isAdmin
-        }
-      })
     },
 
     login: (state, action) => {
@@ -84,18 +79,35 @@ export const userSlice = createSlice({
       state.isLogin = false
       state.loginUser = null
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUsersData.pending, (state, action) => {
+        state.isLoading = true
+      })
+      .addCase(fetchUsersData.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.users = action.payload
+      })
+      .addCase(fetchUsersData.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = 'Some Thing Went Wrong'
+      })
+
+      .addCase(fetchUserData.pending, (state, action) => {
+        state.isLoading = true
+      })
+      .addCase(fetchUserData.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.loginUser = action.payload
+      })
+      .addCase(fetchUserData.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = 'Something Went Wrong'
+      })
   }
 })
-export const {
-  usersRequest,
-  usersSuccess,
-  removeUser,
-  getUserById,
-  block,
-  updateRole,
-  editUser,
-  login,
-  logout
-} = userSlice.actions
+export const { usersRequest, usersSuccess, getUserById, updateRole, editUser, login, logout } =
+  userSlice.actions
 
 export default userSlice.reducer
