@@ -5,28 +5,32 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer, toast } from 'react-toastify'
 import { FaCartPlus, FaRegHeart, FaTag } from 'react-icons/fa6'
 
+import { baseURL } from '../../api'
 import { RootState } from '../../redux/store'
 import { addItem } from '../../redux/slices/cartSlice'
-import { getProductById, ProductType } from '../../redux/slices/productSlice'
+import { fetchProductData, ProductType } from '../../redux/slices/productSlice'
 
 export const Product = () => {
-  const { id } = useParams()
+  const { _id } = useParams()
   const dispatch = useDispatch()
 
-  const product: ProductType = useSelector((state: RootState) => state.products.product)
+  const { product } = useSelector((state: RootState) => state.products)
   const { categories } = useSelector((state: RootState) => state.categories)
 
   useEffect(() => {
-    dispatch(getProductById(id))
-  }, [id])
+    console.log('id', _id)
 
-  const getCategoryName = (categoryId: number) => {
+    dispatch(fetchProductData(_id))
+    console.log('product', product)
+  }, [_id])
+
+  const getCategoryName = (categoryId: string) => {
     const category = categories.find((category) => category.id == categoryId)
     return category ? ' ' + category.name + '  ' : 'category not found'
   }
 
   //add to cart logic
-  const addItemHandle = (productId: number) => {
+  const addItemHandle = (productId: string) => {
     const id = productId + '' + new Date()
     const item = {
       id: id,
@@ -46,14 +50,14 @@ export const Product = () => {
         {product ? (
           <>
             <img
-              src={product.image}
+              src={baseURL + product.image}
               alt={`${product.name} image`}
               id="image"
               className="product-details"
             />
             <div className="product">
               <div id="id" className="product-details">
-                {'#' + product.id}
+                {'#' + product._id}
               </div>
               <div id="name" className="product-details">
                 {product.name}
@@ -72,36 +76,11 @@ export const Product = () => {
               <div id="description" className="product-details">
                 {product.description}
               </div>
-
-              {/* <div id="variants">
-                variants:
-                <select name="variants" id="">
-                  {product.variants && product.variants.length ? (
-                    product.variants.map((variant) => (
-                      <option key={variant} value={variant}>
-                        {variant}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="one variant">one variant</option>
-                  )}
-                </select>
-              </div>
-
-              <div id="sizes">
-                sizes:
-                <select name="sizes" id="">
-                  {product.sizes && product.sizes.length ? (
-                    product.sizes.map((size) => (
-                      <option key={size} value={size}>
-                        {size}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="one size">one size</option>
-                  )}
-                </select>
-              </div> */}
+              <p className="options">
+                {product.quantity < 5 && product.quantity <= 0
+                  ? 'out of stock'
+                  : `only ${product.quantity} left in stock`}
+              </p>
 
               <div className="buy">
                 <div className="price">
@@ -109,15 +88,15 @@ export const Product = () => {
                 </div>
                 <div className="buy-buttons">
                   <button
-                    id={`${product.id}`}
+                    id={`${product._id}`}
                     className=" button product-btn"
-                    onClick={() => addItemHandle(product.id)}>
+                    onClick={() => addItemHandle(product._id)}>
                     <FaCartPlus className="icon" />
                   </button>
                   <button
-                    id={`${product.id}`}
+                    id={`${product._id}`}
                     className=" button product-btn"
-                    onClick={() => addItemHandle(product.id)}>
+                    onClick={() => addItemHandle(product._id)}>
                     <FaRegHeart className="icon" />
                   </button>
                 </div>

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const isDevelopment = import.meta.env.MODE === 'development'
-let baseURL = 'http://localhost:5050/'
+export let baseURL = 'http://localhost:5050/'
 
 if (!isDevelopment) {
   baseURL = 'http://localhost:5050/'

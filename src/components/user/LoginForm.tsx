@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { login } from '../../redux/slices/userSlice'
@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify'
 
 import api from '../../api'
 
-type UserInfo = {
+type Inputs = {
   email: string
   password: string
 }
@@ -20,9 +20,9 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm()
+  } = useForm<Inputs>()
 
-  const onSubmit = async (userInfo) => {
+  const onSubmit: SubmitHandler<Inputs> = async (userInfo) => {
     try {
       const { data } = await api.post('auth/login', userInfo)
       const { password, ...user } = data.user

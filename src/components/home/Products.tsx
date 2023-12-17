@@ -1,22 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer, toast } from 'react-toastify'
 import { FaCartPlus, FaRegHeart, FaTag } from 'react-icons/fa6'
 
+import { fetchProductsData } from '../../redux/slices/productSlice'
 import { addItem } from '../../redux/slices/cartSlice'
 import { AppDispatch, RootState } from '../../redux/store'
+import { baseURL } from '../../api'
 
 export function Products() {
   const dispatch = useDispatch<AppDispatch>()
-  const products = useSelector((state: RootState) => state.products)
+  const { products, isLoading } = useSelector((state: RootState) => state.products)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(4)
 
+  useEffect(() => {
+    dispatch(fetchProductsData())
+    console.log('products', products)
+  }, [])
+
   //add to cart logic
-  const addItemHandle = (productId: number, productPrice: number) => {
+  const addItemHandle = (productId: string, productPrice: number) => {
     const id = productId + '' + new Date()
 
     const item = {
@@ -35,8 +42,8 @@ export function Products() {
   // pagination
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfirstItem = indexOfLastItem - itemsPerPage
-  const currentitems = products.products.slice(indexOfirstItem, indexOfLastItem)
-  const totalpages = Math.ceil(products.products.length / itemsPerPage)
+  const currentitems = products.slice(indexOfirstItem, indexOfLastItem)
+  const totalpages = Math.ceil(products.length / itemsPerPage)
   let pagesBtn = []
   for (let i = 1; i <= totalpages; i++) {
     pagesBtn.push(
@@ -61,11 +68,18 @@ export function Products() {
   return (
     <>
       <div id="products" className="products-container">
-        {products.isLoading && <h3> Loading products...</h3>}
+        {isLoading && <h3> Loading products...</h3>}
 
         {currentitems.map((product) => (
-          <div key={product.id} className="product">
-            <img src={product.image} alt={product.name} width="50" className="product-img" />
+          <div
+            key={product._id}
+            className={product.quantity <= 0 ? 'product out-of-stock' : 'product'}>
+            <img
+              src={baseURL + product.image}
+              alt={product.name}
+              width="50"
+              className="product-img"
+            />
             <div className="product-details">
               <h2>{product.name}</h2>
               <p className="description">{product.description}</p>
@@ -76,23 +90,22 @@ export function Products() {
 
                 <div className="buy-buttons">
                   <button
-                    id={`${product.id}`}
+                    id={`${product._id}`}
                     className=" button product-btn"
-                    onClick={() => addItemHandle(product.id, product.price)}>
+                    onClick={() => addItemHandle(product._id, product.price)}>
                     <FaCartPlus className="icon" />
                   </button>
-                  <button id={`${product.id}`} className=" button product-btn">
+                  <button id={`${product._id}`} className=" button product-btn">
                     <FaRegHeart className="icon" />
                   </button>
                 </div>
               </div>
-              {/* <p className="options">
-                {product.sizes[0]}
-                {product.sizes[0] && ', '}
-                {product.variants[0]}
-              </p> */}
-
-              <Link to={`/product/${product.id}`}>
+              <p className="options">
+                {product.quantity < 5 && product.quantity <= 0
+                  ? 'out of stock'
+                  : `only ${product.quantity} left in stock`}
+              </p>
+              <Link to={`/product/${product._id}`}>
                 <button className="button product-btn more-btn">More Options</button>
               </Link>
             </div>

@@ -1,14 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+
+import api from '../../api/index'
 
 export type ProductType = {
-  id: number
+  _id: string
   name: string
   image: string
   description: string
   price: number
-  categories: number[]
-  variants: string[]
-  sizes: string[]
+  categories: string[]
+  quantity: number
+  sold: number
 }
 
 export type ProductState = {
@@ -26,6 +28,19 @@ const initialState: ProductState = {
   isLoading: false,
   product: null
 }
+
+export const fetchProductsData = createAsyncThunk('./products/fetchProducts', async () => {
+  const { data } = await api.get('/products')
+  return data.allProducts
+})
+
+export const fetchProductData = createAsyncThunk('./products/fetchProduct', async (_id) => {
+  console.log('_id in slice', _id)
+
+  const { data } = await api.get(`products/${_id}`)
+
+  return data.product
+})
 
 export const productSlice = createSlice({
   name: 'product',
@@ -50,7 +65,7 @@ export const productSlice = createSlice({
     editProduct: (state, action) => {
       const editedProduct = action.payload
       const updatedProducts = state.products.map((product) => {
-        if (product.id == editedProduct.id) {
+        if (product._id == editedProduct._id) {
           return editedProduct
         }
         return product
@@ -61,12 +76,12 @@ export const productSlice = createSlice({
 
     removeProduct: (state, action) => {
       const productId = action.payload
-      state.fetchedProducts = state.fetchedProducts.filter((product) => product.id !== productId)
+      state.fetchedProducts = state.fetchedProducts.filter((product) => product._id !== productId)
       state.products = state.fetchedProducts
     },
 
     getProductById: (state, action) => {
-      state.product = state.products.find((product) => product.id == +action.payload)
+      state.product = state.products.find((product) => product._id == action.payload)
     },
 
     getProductsByCategory: (state, action) => {
@@ -112,6 +127,32 @@ export const productSlice = createSlice({
         })
       }
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProductsData.pending, (state, action) => {
+        state.isLoading = true
+      })
+      .addCase(fetchProductsData.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.products = action.payload
+      })
+      .addCase(fetchProductsData.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = 'Some Thing Went Wrong'
+      })
+
+      .addCase(fetchProductData.pending, (state, action) => {
+        state.isLoading = true
+      })
+      .addCase(fetchProductData.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.product = action.payload
+      })
+      .addCase(fetchProductData.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = 'Something Went Wrong'
+      })
   }
 })
 export const {

@@ -86,7 +86,7 @@ export const NavBar = () => {
 
           <Route path="/products" element={<App />} />
           <Route path="/contactUs" element={<Contact />} />
-          <Route path="/product/:id" element={<Product />} />
+          <Route path="/product/:_id" element={<Product />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -102,10 +102,10 @@ export const NavBar = () => {
           <Route path="/admin" element={<AdminRoute />}>
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<ProductsManager />} />
-            <Route path="/admin/products/:id" element={<EditProductWrapper />} />
+            <Route path="/admin/products/:_id" element={<EditProductWrapper />} />
             <Route path="/admin/categories" element={<CategoriesManager />} />
             <Route path="/admin/users" element={<UsersManager />} />
-            <Route path="/admin/users/:id" element={<User />} />
+            <Route path="/admin/users/:_id" element={<User />} />
             <Route path="/admin/orders" element={<OrdersManager />} />
           </Route>
         </Routes>
