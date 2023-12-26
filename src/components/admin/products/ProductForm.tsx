@@ -1,36 +1,27 @@
-import { ChangeEvent } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import Select from 'react-select'
 import { MultiValue } from 'react-select'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
-import { ProductType } from '../../../redux/slices/productSlice'
-import { CategoryType } from '../../../redux/slices/categorySlice'
-
-type OptionType = { value: string; label: string; name: string }
+import { CategoryOptionType, ProductInputType } from '../../../types/productTypes'
+import { CategoryType } from '../../../types/categoryTypes'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../../../redux/store'
+import { fetchCategories } from '../../../redux/slices/categorySlice'
 
 type ProductFormProps = {
-  product: ProductType
-  categories: CategoryType[]
-  formSubmit: SubmitHandler<Inputs>
+  product: ProductInputType
+  chosenCategories: CategoryOptionType[]
+  formSubmit: SubmitHandler<ProductInputType>
   handleChange: (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | MultiValue<OptionType>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | MultiValue<CategoryOptionType>
   ) => void
   formType: string
 }
 
-type Inputs = {
-  name: string
-  price: number
-  image: string
-  description: string
-  categories: []
-  variants: []
-  sizes: []
-}
-
 export function ProductForm({
   product,
-  categories,
+  chosenCategories,
   formSubmit,
   handleChange,
   formType
@@ -39,24 +30,28 @@ export function ProductForm({
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<Inputs>({
+  } = useForm<ProductInputType>({
     values: {
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      description: product.description,
-      variants: product.variants,
-      sizes: product.sizes
+      name: product?.name,
+      price: product?.price,
+      description: product?.description,
+      quantity: product?.quantity
     }
   })
+  const { categories } = useSelector((state: RootState) => state.categories)
+  const dispatch = useDispatch<AppDispatch>()
 
-  let options: OptionType[] = []
-  let option: OptionType
+  useEffect(() => {
+    dispatch(fetchCategories())
+  }, [dispatch])
+
+  let options: CategoryOptionType[] = []
+  let option: CategoryOptionType
   categories.map((category) => {
-    option = { value: category.id + '', label: category.name, name: category.name }
-
+    option = { value: category._id + '', label: category.name }
     options = [...options, option]
   })
+  console.log('options', options)
 
   const inputStyle = 'contact-input'
   const labelStyle = 'block text-sm font-medium text-gray-600'
@@ -98,20 +93,16 @@ export function ProductForm({
 
         <div className="input-group">
           <label htmlFor="image" className={labelStyle}>
-            Image URL:
+            Image:
           </label>
           <input
-            type="text"
+            type="file"
             id="image"
-            {...register('image', {
-              required: true,
-              pattern: /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??/
-            })}
+            accept="image/*"
+            {...register('image')}
             onChange={handleChange}
             className={inputStyle}
           />
-          {errors.image && <span className="error">*The image url can't be empty</span>}
-          {errors.image && <span className="error">*Enter valid url</span>}
         </div>
         <div className="input-group">
           <label htmlFor="description" className={labelStyle}>
@@ -146,36 +137,25 @@ export function ProductForm({
           />
           {errors.categories && <span className="error">*Choose atleast one category</span>}
         </div>
+
         <div className="input-group">
-          <label htmlFor="variants" className={labelStyle}>
-            Variants: (use comma , to create multiple)
+          <label htmlFor="quantity" className={labelStyle}>
+            quantity:
           </label>
           <input
             type="text"
-            id="variants"
-            {...register('variants', {
-              required: true
-            })}
+            id="quantity"
+            {...register('quantity', { required: true, min: 1 })}
             onChange={handleChange}
             className={inputStyle}
           />
-          {errors.variants && <span className="error">variants can't be empty</span>}
+          {errors.name && (
+            <>
+              <span className="error">*The quantity can't be less than 0</span>
+            </>
+          )}
         </div>
-        <div className="input-group">
-          <label htmlFor="sizes" className={labelStyle}>
-            Sizes: (use comma , to create multiple)
-          </label>
-          <input
-            type="text"
-            id="sizes"
-            {...register('sizes', {
-              required: true
-            })}
-            onChange={handleChange}
-            className="w-full px-3 py-2 text-white border rounded-lg focus:outline-none focus:border-blue-400"
-          />
-          {errors.sizes && <span className="error">sizes can't be empty</span>}
-        </div>
+
         <button type="submit" className="form-btn">
           {formType}
         </button>

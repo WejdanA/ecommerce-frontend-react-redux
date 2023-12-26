@@ -1,63 +1,56 @@
-import { useState, ChangeEvent } from 'react'
-import { MultiValue } from 'react-select'
+import { ChangeEvent, useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
+import { MultiValue } from 'react-select'
 import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer, toast } from 'react-toastify'
-import { useDispatch, useSelector } from 'react-redux'
 
+import { createProduct } from '../../../redux/slices/productSlice'
+import { AppDispatch } from '../../../redux/store'
+import { CategoryOptionType, ProductInputType } from '../../../types/productTypes'
 import { ProductForm } from './ProductForm'
-import { AppDispatch, RootState } from '../../../redux/store'
-import { addProduct, ProductType } from '../../../redux/slices/productSlice'
 
-const initialProductState: ProductType = {
-  id: 0,
+const initialProductState: ProductInputType = {
   name: '',
-  image: '',
   description: '',
+  image: undefined,
   price: 0,
   categories: [],
-  variants: [],
-  sizes: []
+  quantity: 1
 }
-
-type OptionType = { value: string; label: string; name: string }
 
 export function NewProductWrapper() {
   const dispatch = useDispatch<AppDispatch>()
-  const categories = useSelector((state: RootState) => state.categories.categories)
-  const [product, setProduct] = useState<ProductType>(initialProductState)
-  type Inputs = {
-    name: string
-    image: string
-    description: string
-    categories: []
-    variants: []
-    sizes: []
-  }
+
+  const [product, setProduct] = useState<ProductInputType>(initialProductState)
+  const [chosenCategories, setChosenCategories] = useState<CategoryOptionType[]>()
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | MultiValue<OptionType>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | MultiValue<CategoryOptionType>
   ) => {
-    let categoriesEvent
-
-    if (Array.isArray(e)) {
-      let value: Number[] = []
-      e.map((option) => {
-        value = [...value, +option.value]
-      })
-      categoriesEvent = { name: 'categories', value: value }
-    }
-
-    const { name, value } = Array.isArray(e) ? categoriesEvent : e.target
-
-    const isList = name === 'variants' || name === 'sizes'
-    if (isList) {
+    if (e.target?.type == 'file') {
+      const fileInput = (e.target as HTMLInputElement) || ''
       setProduct({
         ...product,
-        [name]: value.split(',')
+        ['image']: fileInput.files?.[0]
       })
       return
     }
+
+    if (Array.isArray(e)) {
+      setChosenCategories(e)
+      let value: string[] = []
+      e.map((option) => {
+        value = [...value, option.value]
+      })
+
+      setProduct({
+        ...product,
+        ['categories']: value
+      })
+      return
+    }
+
+    const { name, value } = e.target
 
     setProduct({
       ...product,
@@ -65,16 +58,26 @@ export function NewProductWrapper() {
     })
   }
 
-  const notify = () => toast.success('product was created')
+  const formSubmit: SubmitHandler<Partial<ProductInputType>> = (data) => {
+    const formData = new FormData()
 
-  const formSubmit: SubmitHandler<Inputs> = () => {
-    product.id = +new Date()
+    formData.append('name', product.name)
+    formData.append('image', product.image as Blob)
+    formData.append('description', product.description)
+    formData.append('price', String(product.price))
+    formData.append('quantity', String(product.quantity))
+    let index = 0
+    product.categories?.map((category) => {
+      formData.append(`categories[${index}]`, category)
+      index++
+    })
 
     // add product
-    dispatch(addProduct(product))
-    notify()
+    dispatch(createProduct(formData))
+
     // Reset the form
     setProduct(initialProductState)
+    setChosenCategories([])
   }
 
   return (
@@ -83,10 +86,9 @@ export function NewProductWrapper() {
         formSubmit={formSubmit}
         handleChange={handleChange}
         product={product}
-        categories={categories}
+        chosenCategories={chosenCategories}
         formType={'Create Product'}
       />
-      <ToastContainer />
     </div>
   )
 }

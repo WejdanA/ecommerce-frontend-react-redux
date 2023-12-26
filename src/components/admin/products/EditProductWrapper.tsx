@@ -1,89 +1,93 @@
-import { MultiValue } from 'react-select'
-import { useParams } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { useState, ChangeEvent, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { MultiValue } from 'react-select'
 
 import { AppDispatch, RootState } from '../../../redux/store'
-import { editProduct, getProductById, ProductType } from '../../../redux/slices/productSlice'
-
+import { fetchProductData, updateProduct } from '../../../redux/slices/productSlice'
+import { CategoryOptionType, ProductInputType } from '../../../types/productTypes'
 import { ProductForm } from './ProductForm'
 
-const initialProductState: ProductType = {
-  id: 0,
+const initialProductState: ProductInputType = {
   name: '',
-  image: '',
   description: '',
   price: 0,
   categories: [],
-  variants: [],
-  sizes: []
+  quantity: 0
 }
-
-type Inputs = {
-  name: string
-  image: string
-  description: string
-  categories: []
-  variants: []
-  sizes: []
-}
-
-type OptionType = { value: string; label: string; name: string }
 
 export function EditProductWrapper() {
-  const { id } = useParams()
+  const { _id } = useParams()
 
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
-  const currentProduct = useSelector((state: RootState) => state.products.product)
-  const categories = useSelector((state: RootState) => state.categories.categories)
+  const { productInput, chosenCategories } = useSelector((state: RootState) => state.products)
 
-  const [product, setProduct] = useState<ProductType>(initialProductState)
-
-  useEffect(() => {
-    dispatch(getProductById(id))
-  }, [id])
+  const [product, setProduct] = useState<ProductInputType>(initialProductState)
+  const [chosenOptions, setChosenOptions] = useState<CategoryOptionType[]>()
 
   useEffect(() => {
-    setProduct(currentProduct)
-  }, [currentProduct])
+    dispatch(fetchProductData(_id))
+  }, [_id])
 
+  useEffect(() => {
+    setProduct(productInput)
+  }, [productInput])
+
+  useEffect(() => {
+    setChosenOptions(chosenCategories)
+  }, [chosenCategories])
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | MultiValue<OptionType>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | MultiValue<CategoryOptionType>
   ) => {
-    let categoriesEvent
-    if (Array.isArray(e)) {
-      let value: Number[] = []
-      e.map((option) => {
-        value = [...value, +option.value]
-      })
-      categoriesEvent = { name: 'categories', value: value }
-    }
-
-    const { name, value } = Array.isArray(e) ? categoriesEvent : e.target
-
-    const isList = name === 'variants' || name === 'sizes'
-    if (isList) {
+    if (e.target?.type == 'file') {
+      const fileInput = (e.target as HTMLInputElement) || ''
       setProduct({
         ...product,
-        [name]: value.split(',')
+        ['image']: fileInput.files?.[0]
       })
       return
     }
 
+    if (Array.isArray(e)) {
+      let value: string[] = []
+      e.map((option) => {
+        value = [...value, option.value]
+      })
+
+      setProduct({
+        ...product,
+        ['categories']: value
+      })
+      return
+    }
+
+    const { name, value } = e.target
     setProduct({
       ...product,
       [name]: value
     })
   }
 
-  const formSubmit: SubmitHandler<Inputs> = () => {
+  const formSubmit: SubmitHandler<ProductInputType> = () => {
     // update the product
-    console.log('product', product)
-    dispatch(editProduct(product))
+
+    const formData = new FormData()
+
+    formData.append('name', product.name)
+    if (product.image) {
+      formData.append('image', product.image as Blob)
+    }
+    formData.append('description', product.description)
+    formData.append('quantity', String(product.quantity))
+    let index = 0
+    product.categories?.map((category) => {
+      formData.append(`categories[${index}]`, category)
+      index++
+    })
+    dispatch(updateProduct({ _id, formData }))
     // Reset the form
     setProduct(initialProductState)
     navigate('/admin/products')
@@ -95,7 +99,7 @@ export function EditProductWrapper() {
         formSubmit={formSubmit}
         handleChange={handleChange}
         product={product}
-        categories={categories}
+        chosenCategories={chosenOptions}
         formType={'Update Product'}
       />
     </div>
