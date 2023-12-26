@@ -1,12 +1,12 @@
-import { useForm } from 'react-hook-form'
-import { SubmitHandler } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 
-import api from '../../api'
+import { clearUserMessage, resetPassword } from '../../redux/slices/userSlice'
+import { AppDispatch, RootState } from '../../redux/store'
+import { Messages } from '../../utils/Messages'
 
 type Inputs = {
   password: string
@@ -16,6 +16,8 @@ type Inputs = {
 export const ResetPassword = () => {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
+  const { error, success } = useSelector((state: RootState) => state.users)
+  const dispatch = useDispatch<AppDispatch>()
 
   const {
     register,
@@ -25,21 +27,22 @@ export const ResetPassword = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (passwords) => {
     const { password, repeatedPassword } = passwords
+    const resetPasswordInfo = {
+      password,
+      token
+    }
 
     try {
       if (password != repeatedPassword) {
         throw new Error('The passwords do not match')
       }
 
-      const { data } = await api.post('users/reset-password', { password, token })
-
-      notifySuccess(data.message)
+      dispatch(resetPassword(resetPasswordInfo))
     } catch (error: any) {
-      notifyError(error.response?.data.msg || error?.message)
+      notifyError(error.message)
     }
   }
 
-  const notifySuccess = (message: string) => toast.success(message)
   const notifyError = (message: string) => toast.error(message)
 
   return (
@@ -68,7 +71,7 @@ export const ResetPassword = () => {
             Reset Password
           </button>
         </div>
-        <ToastContainer />
+        <Messages error={error} success={success} clearMessage={clearUserMessage} />
       </form>
     </div>
   )

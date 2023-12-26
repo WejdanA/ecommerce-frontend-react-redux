@@ -1,56 +1,42 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer, toast } from 'react-toastify'
-
+import {
+  clearUserMessage,
+  deleteUser,
+  fetchUsersData,
+  updateUserBanning,
+  updateUserRole
+} from '../../../redux/slices/userSlice'
 import { AppDispatch, RootState } from '../../../redux/store'
-
-import api from '../../../api'
+import { Messages } from '../../../utils/Messages'
 import { Admin } from '../Admin'
-import { fetchUsersData } from '../../../redux/slices/userSlice'
 
 export function UsersManager() {
+  const { users, isLoading, success, error } = useSelector((state: RootState) => state.users)
   const dispatch = useDispatch<AppDispatch>()
-  const { users, isLoading } = useSelector((state: RootState) => state.users)
 
   useEffect(() => {
     dispatch(fetchUsersData())
-  }, [])
+  }, [dispatch])
 
   const handleBanUser = async (_id: string, isBanned: boolean) => {
-    try {
-      const { data } = isBanned
-        ? await api.put(`/users/unban/${_id}`)
-        : await api.put(`/users/ban/${_id}`)
-
-      dispatch(fetchUsersData())
-    } catch (error: any) {
-      notifyError(error.response.data.msg)
+    const bannedInfo = {
+      _id: _id,
+      isBanned: isBanned
     }
+
+    dispatch(updateUserBanning(bannedInfo))
   }
+
   const handleUserRole = async (_id: string, isAdmin: boolean) => {
-    try {
-      const { data } = isAdmin
-        ? await api.put(`/users/notadmin/${_id}`)
-        : await api.put(`/users/admin/${_id}`)
-
-      dispatch(fetchUsersData())
-    } catch (error: any) {
-      notifyError(error.response.data.msg)
+    const roleInfo = {
+      _id: _id,
+      isAdmin: isAdmin
     }
-  }
-  const handleDeleteUser = async (_id: string) => {
-    try {
-      const { data } = await api.delete(`/users/${_id}`)
 
-      dispatch(fetchUsersData())
-    } catch (error: any) {
-      notifyError(error.response.data.msg)
-    }
+    dispatch(updateUserRole(roleInfo))
   }
-
-  const notifyError = (message: string) => toast.error(message + '. try again!')
 
   return (
     <div className="main-content">
@@ -67,6 +53,8 @@ export function UsersManager() {
                 <th scope="col">last name</th>
                 <th scope="col">email</th>
                 <th scope="col">role</th>
+                <th scope="col">orders</th>
+                <th scope="col">balance</th>
                 <th scope="col">operations</th>
               </tr>
             </thead>
@@ -78,6 +66,8 @@ export function UsersManager() {
                   <td>{user.lastName}</td>
                   <td>{user.email}</td>
                   <td>{user.isAdmin ? 'admin' : 'visitor'}</td>
+                  <td>orders</td>
+                  <td>{user.balance}</td>
 
                   <td>
                     <button
@@ -91,7 +81,7 @@ export function UsersManager() {
                       {user.isAdmin ? 'downgrade' : 'upgrade'}
                     </button>
 
-                    <button className="remove-btn" onClick={() => handleDeleteUser(user._id)}>
+                    <button className="remove-btn" onClick={() => dispatch(deleteUser(user._id))}>
                       X
                     </button>
                   </td>
@@ -99,7 +89,7 @@ export function UsersManager() {
               ))}
             </tbody>
           </table>
-          <ToastContainer />
+          <Messages error={error} success={success} clearMessage={clearUserMessage} />
         </div>
       )}
     </div>

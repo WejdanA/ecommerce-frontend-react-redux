@@ -1,18 +1,17 @@
-import { useForm } from 'react-hook-form'
-import { SubmitHandler } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
 
-import api from '../../api'
+import { clearUserMessage, forgetPassword } from '../../redux/slices/userSlice'
+import { AppDispatch, RootState } from '../../redux/store'
+import { Messages } from '../../utils/Messages'
 
 type Inputs = {
   email: string
 }
 
 export const ForgetPassword = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { error, success } = useSelector((state: RootState) => state.users)
+  const dispatch = useDispatch<AppDispatch>()
 
   const {
     register,
@@ -20,18 +19,9 @@ export const ForgetPassword = () => {
     formState: { errors }
   } = useForm<Inputs>()
 
-  const onSubmit: SubmitHandler<Inputs> = async (email) => {
-    try {
-      const { data } = await api.post('users/forget-password', email)
-
-      notifySuccess(data.message)
-    } catch (error: any) {
-      notifyError(error.response.data.msg)
-    }
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    dispatch(forgetPassword(data.email))
   }
-
-  const notifySuccess = (message: string) => toast.success(message)
-  const notifyError = (message: string) => toast.error(message)
 
   return (
     <div className="main-content contact">
@@ -58,8 +48,8 @@ export const ForgetPassword = () => {
             verify email
           </button>
         </div>
-        <ToastContainer />
       </form>
+      <Messages error={error} success={success} clearMessage={clearUserMessage} />
     </div>
   )
 }

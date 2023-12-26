@@ -1,31 +1,24 @@
-import { useState, ChangeEvent } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
 
-import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer, toast } from 'react-toastify'
-
-import api from '../../api'
+import { clearUserMessage, register } from '../../redux/slices/userSlice'
+import { AppDispatch, RootState } from '../../redux/store'
+import { UserType } from '../../types/userTypes'
+import { Messages } from '../../utils/Messages'
 import { UserForm } from './UserForm'
-import { UserInputType } from '../../redux/slices/userSlice'
 
-const initialUserState: UserInputType = {
+const initialUserState: Partial<UserType> = {
   firstName: '',
   lastName: '',
   email: '',
-  password: '',
-  isAdmin: false,
-  isBanned: true
+  password: ''
 }
 
 export function SignUp() {
-  const [user, setUser] = useState<UserInputType>(initialUserState)
-
-  type Inputs = {
-    firstName: string
-    lastName: string
-    email: string
-    password: string
-  }
+  const { success, error } = useSelector((state: RootState) => state.users)
+  const dispatch = useDispatch<AppDispatch>()
+  const [user, setUser] = useState<Partial<UserType>>(initialUserState)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
     const { name, value } = e.target
@@ -36,18 +29,11 @@ export function SignUp() {
     })
   }
 
-  const formSubmit: SubmitHandler<Inputs> = async () => {
-    try {
-      const { data } = await api.post('/users/register', user)
-      notifySuccess()
-      setUser(initialUserState)
-    } catch (error: any) {
-      notifyError(error.response.data.msg)
-    }
+  const formSubmit: SubmitHandler<Partial<UserType>> = async () => {
+    dispatch(register(user))
+    setUser(initialUserState)
   }
-  const notifySuccess = () =>
-    toast.success('your account was registered successfuly, please check your email for activation')
-  const notifyError = (message: string) => toast.error(message + '. please try again')
+
   return (
     <div>
       <UserForm
@@ -56,7 +42,7 @@ export function SignUp() {
         newUser={user}
         formType={'Sign Up'}
       />
-      <ToastContainer />
+      <Messages error={error} success={success} clearMessage={clearUserMessage} />
     </div>
   )
 }

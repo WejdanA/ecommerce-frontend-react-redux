@@ -4,29 +4,21 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 
 import { RootState } from '../../redux/store'
-import { UserInputType } from '../../redux/slices/userSlice'
+import { UserType } from '../../types/userTypes'
 
 type UserFormProps = {
-  newUser: UserInputType
+  newUser: Partial<UserType>
   formType: string
-  formSubmit: SubmitHandler<Inputs>
+  formSubmit: SubmitHandler<Partial<UserType>>
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => void
 }
 
-type Inputs = {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-}
-
 export function UserForm({ newUser, formType, formSubmit, handleChange }: UserFormProps) {
-  const { users } = useSelector((state: RootState) => state.users)
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<Inputs>({
+  } = useForm<Partial<UserType>>({
     values: {
       firstName: newUser.firstName,
       lastName: newUser.lastName,

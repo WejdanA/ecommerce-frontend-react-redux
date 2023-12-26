@@ -1,42 +1,25 @@
+import { ChangeEvent, useEffect, useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { useState, ChangeEvent, useEffect } from 'react'
 
-import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer, toast } from 'react-toastify'
-
-import api from '../../api'
-import { UserForm } from './UserForm'
-import { fetchUserData, UserType } from '../../redux/slices/userSlice'
+import { clearUserMessage, updateProfile } from '../../redux/slices/userSlice'
 import { AppDispatch, RootState } from '../../redux/store'
+import { UserType } from '../../types/userTypes'
+import { Messages } from '../../utils/Messages'
 import { Orders } from '../admin/orders/Orders'
-
-const initialUserState: UserType = {
-  _id: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  isAdmin: false,
-  isBanned: false
-}
+import { UserForm } from './UserForm'
 
 export function Profile() {
   const dispatch = useDispatch<AppDispatch>()
-  const { loginUser } = useSelector((state: RootState) => state.users)
+  const { loginUser, success, error } = useSelector((state: RootState) => state.users)
   const { userOrders } = useSelector((state: RootState) => state.orders)
 
-  const [user, setUser] = useState<UserType>(initialUserState)
-
-  type Inputs = {
-    firstName: string
-    lastName: string
-    email: string
+  const initialUserState: Partial<UserType> = {
+    firstName: loginUser?.firstName,
+    lastName: loginUser?.lastName,
+    email: loginUser?.email
   }
-
-  useEffect(() => {
-    setUser(loginUser)
-  }, [loginUser])
+  const [user, setUser] = useState<Partial<UserType>>(initialUserState)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
     const { name, value } = e.target
@@ -47,18 +30,9 @@ export function Profile() {
     })
   }
 
-  const formSubmit: SubmitHandler<Inputs> = async (user) => {
-    try {
-      const { data } = await api.put('/users/profile', user)
-      dispatch(fetchUserData())
-      notifySuccess()
-    } catch (error: any) {
-      notifyError(error.response.data.msg)
-    }
+  const formSubmit: SubmitHandler<Partial<UserType>> = async (user) => {
+    dispatch(updateProfile(user))
   }
-
-  const notifySuccess = () => toast.success('your profile was updated successfuly')
-  const notifyError = (message: string) => toast.error(message + '. please try again')
 
   return (
     <div>
@@ -69,7 +43,7 @@ export function Profile() {
         formType={'Update'}
       />
       <Orders orders={userOrders} />.
-      <ToastContainer />
+      <Messages error={error} success={success} clearMessage={clearUserMessage} />
     </div>
   )
 }
