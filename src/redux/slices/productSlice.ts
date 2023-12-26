@@ -1,89 +1,116 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import api from '../../api/index'
-
-export type ProductType = {
-  _id: string
-  name: string
-  image: string
-  description: string
-  price: number
-  categories: string[]
-  quantity: number
-  sold: number
-}
-
-export type ProductState = {
-  fetchedProducts: ProductType[]
-  products: ProductType[]
-  error: null | string
-  isLoading: boolean
-  product: ProductType | undefined | null
-}
+import {
+  CategoryOptionType,
+  ProductInputType,
+  ProductState,
+  ProductType,
+  UpdatedProductType
+} from '../../types/productTypes'
+import { CategoryType } from '../../types/categoryTypes'
 
 const initialState: ProductState = {
   fetchedProducts: [],
   products: [],
   error: null,
+  success: null,
   isLoading: false,
-  product: null
+  product: null,
+  productInput: null,
+  chosenCategories: []
 }
 
-export const fetchProductsData = createAsyncThunk('./products/fetchProducts', async () => {
-  const { data } = await api.get('/products')
-  return data.allProducts
-})
+// user - fetch products, fetch product
+export const fetchProductsData = createAsyncThunk(
+  './product/fetchProducts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get('/products')
 
-export const fetchProductData = createAsyncThunk('./products/fetchProduct', async (_id) => {
-  console.log('_id in slice', _id)
+      return data.allProducts
+    } catch (error: any) {
+      if (!error.status && error.message === 'Network Error') {
+        return rejectWithValue('Network Error')
+      }
+      return rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 
-  const { data } = await api.get(`products/${_id}`)
+export const fetchProductData = createAsyncThunk(
+  './product/fetchProduct',
+  async (_id: string | undefined, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`products/${_id}`)
 
-  return data.product
-})
+      return data
+    } catch (error: any) {
+      if (!error.status && error.message === 'Network Error') {
+        return rejectWithValue('Network Error')
+      }
+      return rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 
+// admin - create product, update product, delete product
+export const createProduct = createAsyncThunk(
+  './product/createProduct',
+  async (product: FormData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post('/products', product)
+
+      return data
+    } catch (error: any) {
+      if (!error.status && error.message === 'Network Error') {
+        return rejectWithValue('Network Error')
+      }
+      return rejectWithValue(error.response.data.msg || error.response.data.errors[0])
+    }
+  }
+)
+
+export const updateProduct = createAsyncThunk(
+  './product/updateProduct',
+  async (updatedProduct: UpdatedProductType, { rejectWithValue }) => {
+    try {
+      const { _id, formData } = updatedProduct
+
+      const { data } = await api.put(`/products/${_id}`, formData)
+
+      return data
+    } catch (error: any) {
+      if (!error.status && error.message === 'Network Error') {
+        return rejectWithValue('Network Error')
+      }
+      return rejectWithValue(error.response.data.msg || error.response.data.errors[0])
+    }
+  }
+)
+export const deleteProduct = createAsyncThunk(
+  './product/deleteProduct',
+  async (_id: string | undefined, { rejectWithValue }) => {
+    try {
+      const { data } = await api.delete(`products/${_id}`)
+
+      return data
+    } catch (error: any) {
+      if (!error.status && error.message === 'Network Error') {
+        return rejectWithValue('Network Error')
+      }
+      return rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    productsRequest: (state) => {
-      state.isLoading = true
+    clearProductMessage: (state) => {
+      state.success = null
+      state.error = null
     },
-
-    productsSuccess: (state, action) => {
-      state.isLoading = false
-      state.fetchedProducts = action.payload.allProducts
-      state.products = action.payload.allProducts
-    },
-
-    addProduct: (state, action) => {
-      const product = action.payload
-      state.fetchedProducts = [product, ...state.fetchedProducts]
-      state.products = state.fetchedProducts
-    },
-
-    editProduct: (state, action) => {
-      const editedProduct = action.payload
-      const updatedProducts = state.products.map((product) => {
-        if (product._id == editedProduct._id) {
-          return editedProduct
-        }
-        return product
-      })
-      state.fetchedProducts = updatedProducts
-      state.products = state.fetchedProducts
-    },
-
-    removeProduct: (state, action) => {
-      const productId = action.payload
-      state.fetchedProducts = state.fetchedProducts.filter((product) => product._id !== productId)
-      state.products = state.fetchedProducts
-    },
-
-    getProductById: (state, action) => {
-      state.product = state.products.find((product) => product._id == action.payload)
-    },
-
     getProductsByCategory: (state, action) => {
       const filterCategoriesIds = action.payload
       filterCategoriesIds.length
@@ -130,41 +157,70 @@ export const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProductsData.pending, (state, action) => {
-        state.isLoading = true
-      })
+      // user - fetch products, fetch product
       .addCase(fetchProductsData.fulfilled, (state, action) => {
-        state.isLoading = false
         state.products = action.payload
-      })
-      .addCase(fetchProductsData.rejected, (state, action) => {
         state.isLoading = false
-        state.error = 'Some Thing Went Wrong'
       })
 
-      .addCase(fetchProductData.pending, (state, action) => {
-        state.isLoading = true
-      })
       .addCase(fetchProductData.fulfilled, (state, action) => {
+        state.product = action.payload.product
+        const { _id, image, ...productInput } = action.payload.product
+
+        // let options: CategoryOptionType[] = []
+        // let option: CategoryOptionType
+        // productInput.categories.map((category: CategoryType) => {
+        //   option = { value: category._id + '', label: category.name }
+
+        //   options = [...options, option]
+        // })
+        // state.chosenCategories = options
+        // productInput.categories = options
+        state.productInput = productInput
         state.isLoading = false
-        state.product = action.payload
       })
-      .addCase(fetchProductData.rejected, (state, action) => {
+      // admin - create product, update product, delete product
+      .addCase(createProduct.fulfilled, (state, action) => {
+        const { message, product } = action.payload
+        state.products = [product, ...state.products]
         state.isLoading = false
-        state.error = 'Something Went Wrong'
       })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        const { message, updatedProduct } = action.payload
+
+        const updatedProducts = state.products.map((product) => {
+          if (product._id == updatedProduct._id) {
+            return updatedProduct
+          }
+          return product
+        })
+        state.products = updatedProducts
+        state.isLoading = false
+        state.success = message
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        const { message, _id } = action.payload
+        state.products = state.products.filter((product) => product._id !== _id)
+        state.isLoading = false
+        state.success = message
+      })
+
+      .addMatcher(
+        (action) => action.type.endsWith('/pending'),
+        (state) => {
+          state.isLoading = true
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/rejected'),
+        (state, action) => {
+          state.isLoading = false
+          state.error = action.payload
+        }
+      )
   }
 })
-export const {
-  removeProduct,
-  addProduct,
-  editProduct,
-  productsRequest,
-  productsSuccess,
-  getProductById,
-  getProductsByCategory,
-  search,
-  sortProducts
-} = productSlice.actions
+export const { clearProductMessage, getProductsByCategory, search, sortProducts } =
+  productSlice.actions
 
 export default productSlice.reducer
