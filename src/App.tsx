@@ -8,7 +8,6 @@ import { Contact } from './components/home/Contact'
 import { Products } from './components/home/Products'
 
 function App() {
-  console.log('render app')
   return (
     <div className="main-content">
       <Hero />

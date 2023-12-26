@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux'
 import { sortProducts } from '../../redux/slices/productSlice'
+
 export const Sort = () => {
   const dispatch = useDispatch()
 

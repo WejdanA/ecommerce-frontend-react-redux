@@ -1,13 +1,13 @@
 import { ChangeEvent } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { search } from '../../redux/slices/productSlice'
+import { updateQueryParams } from '../../redux/slices/productSlice'
 
 export const Search = () => {
   const dispatch = useDispatch()
   const searchHandle = (e: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value
-    dispatch(search(searchTerm))
+    dispatch(updateQueryParams({ name: 'search', value: searchTerm }))
   }
 
   return (

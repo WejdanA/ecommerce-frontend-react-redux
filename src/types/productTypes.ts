@@ -28,9 +28,22 @@ export type UpdatedProductType = {
   formData: FormData
 }
 
+export type Pagination = {
+  totalPages: number
+  currentpage: number
+}
+export type QueryParamsType = {
+  currentPage: number
+  limit: number
+  search?: string
+  rangeId: string
+}
+
 export type ProductState = {
   fetchedProducts: ProductType[]
   products: ProductType[]
+  queryParams: QueryParamsType
+  pagination: Pagination
   error: null | string
   success: null | string
   isLoading: boolean

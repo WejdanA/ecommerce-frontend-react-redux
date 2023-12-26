@@ -2,17 +2,17 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import api from '../../api/index'
 import {
-  CategoryOptionType,
-  ProductInputType,
   ProductState,
   ProductType,
+  QueryParamsType,
   UpdatedProductType
 } from '../../types/productTypes'
-import { CategoryType } from '../../types/categoryTypes'
 
 const initialState: ProductState = {
   fetchedProducts: [],
   products: [],
+  pagination: { totalPages: 0, currentpage: 0 },
+  queryParams: { currentPage: 1, limit: 4, search: '', rangeId: 'range0' },
   error: null,
   success: null,
   isLoading: false,
@@ -24,11 +24,15 @@ const initialState: ProductState = {
 // user - fetch products, fetch product
 export const fetchProductsData = createAsyncThunk(
   './product/fetchProducts',
-  async (_, { rejectWithValue }) => {
+  async (queryParams: QueryParamsType, { rejectWithValue }) => {
     try {
-      const { data } = await api.get('/products')
+      const { currentPage, limit, search, rangeId } = queryParams
 
-      return data.allProducts
+      const { data } = await api.get(
+        `/products/?page=${currentPage}&limit=${limit}&search=${search}&rangeId=${rangeId}`
+      )
+
+      return data
     } catch (error: any) {
       if (!error.status && error.message === 'Network Error') {
         return rejectWithValue('Network Error')
@@ -111,6 +115,10 @@ export const productSlice = createSlice({
       state.success = null
       state.error = null
     },
+    updateQueryParams: (state, action) => {
+      const { name, value } = action.payload
+      state.queryParams = { ...state.queryParams, [name]: value }
+    },
     getProductsByCategory: (state, action) => {
       const filterCategoriesIds = action.payload
       filterCategoriesIds.length
@@ -121,13 +129,6 @@ export const productSlice = createSlice({
             return filteredCat
           }))
         : (state.products = state.fetchedProducts)
-    },
-
-    search: (state, action) => {
-      const searchTerm = action.payload
-      state.products = state.fetchedProducts.filter((product) => {
-        return product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      })
     },
 
     sortProducts: (state, action) => {
@@ -159,7 +160,10 @@ export const productSlice = createSlice({
     builder
       // user - fetch products, fetch product
       .addCase(fetchProductsData.fulfilled, (state, action) => {
-        state.products = action.payload
+        const { allProducts, pagination } = action.payload
+        state.products = allProducts
+        state.fetchedProducts = allProducts
+        state.pagination = pagination
         state.isLoading = false
       })
 
@@ -220,7 +224,7 @@ export const productSlice = createSlice({
       )
   }
 })
-export const { clearProductMessage, getProductsByCategory, search, sortProducts } =
+export const { clearProductMessage, updateQueryParams, getProductsByCategory, sortProducts } =
   productSlice.actions
 
 export default productSlice.reducer

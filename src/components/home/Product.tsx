@@ -6,28 +6,19 @@ import { ToastContainer, toast } from 'react-toastify'
 import { FaCartPlus, FaRegHeart, FaTag } from 'react-icons/fa6'
 
 import { baseURL } from '../../api'
-import { RootState } from '../../redux/store'
+import { AppDispatch, RootState } from '../../redux/store'
 import { addItem } from '../../redux/slices/cartSlice'
-import { fetchProductData, ProductType } from '../../redux/slices/productSlice'
+import { fetchProductData } from '../../redux/slices/productSlice'
 
 export const Product = () => {
   const { _id } = useParams()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const { product } = useSelector((state: RootState) => state.products)
-  const { categories } = useSelector((state: RootState) => state.categories)
 
   useEffect(() => {
-    console.log('id', _id)
-
     dispatch(fetchProductData(_id))
-    console.log('product', product)
   }, [_id])
-
-  const getCategoryName = (categoryId: string) => {
-    const category = categories.find((category) => category.id == categoryId)
-    return category ? ' ' + category.name + '  ' : 'category not found'
-  }
 
   //add to cart logic
   const addItemHandle = (productId: string) => {
@@ -66,9 +57,9 @@ export const Product = () => {
               <div id="categories" className="product-details">
                 categories:
                 {product.categories &&
-                  product.categories.map((categoryId) => (
-                    <span key={categoryId} id="category">
-                      {getCategoryName(categoryId)}
+                  product.categories.map((category) => (
+                    <span key={category._id} id="category">
+                      {category.name + ' '}
                     </span>
                   ))}
               </div>
