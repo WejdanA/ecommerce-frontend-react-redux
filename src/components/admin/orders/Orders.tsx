@@ -1,7 +1,4 @@
-import { useSelector } from 'react-redux'
-
-import { RootState } from '../../../redux/store'
-
+import { Link } from 'react-router-dom'
 import { OrderType } from '../../../redux/slices/orderSlice'
 
 type OrdersPropsType = {
@@ -9,18 +6,10 @@ type OrdersPropsType = {
 }
 
 export function Orders({ orders }: OrdersPropsType) {
-  const { users } = useSelector((state: RootState) => state.users)
-  const { products } = useSelector((state: RootState) => state.products)
-
-  const getProductName = (productId: number) => {
-    const product = products.find((product) => product.id == productId)
-    return product ? product.name : 'product was not found'
-  }
-
-  const getUserName = (userId: number) => {
-    const user = users.find((user) => user.id == userId)
-    return user ? user.firstName + ', ' + user.lastName : 'product was not found'
-  }
+  // const getProductName = (orderProducts: []) => {
+  //   const product = products.find((product) => product._id == productId)
+  //   return product ? product.name : 'product was not found'
+  // }
 
   return (
     <div className="main-content">
@@ -29,24 +18,27 @@ export function Orders({ orders }: OrdersPropsType) {
           <thead className="thead-dark">
             <tr>
               <th scope="col">id</th>
-              <th scope="col">product id</th>
-              <th scope="col">product</th>
+              <th scope="col">details</th>
               <th scope="col">user id</th>
               <th scope="col">user </th>
-              <th scope="col">purchased At</th>
+              <th scope="col">order status </th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order.id} className="flex items-center gap-4 text-2xl mb-2">
-                <td>{order.id}</td>
-                <td>{order.productId}</td>
-                <td>{getProductName(order.productId)}</td>
-                <td>{order.userId}</td>
-                <td>{getUserName(order.userId)}</td>
-                <td>{order.purchasedAt + ''}</td>
-              </tr>
-            ))}
+            {orders
+              ? orders.map((order) => (
+                  <tr key={order._id} className="flex items-center gap-4 text-2xl mb-2">
+                    <td>{order._id}</td>
+                    <td>
+                      <Link to="/order-details">details</Link>
+                    </td>
+
+                    <td>{order.user._id}</td>
+                    <td>{order.user.firstName}</td>
+                    <td>{order.status}</td>
+                  </tr>
+                ))
+              : 'orders not found'}
           </tbody>
         </table>
       </div>

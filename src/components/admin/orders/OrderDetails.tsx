@@ -1,42 +1,20 @@
-import { useEffect } from 'react'
-import { Accordion } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { baseURL } from '../../../api'
-import {
-  clearProductMessage,
-  deleteProduct,
-  fetchProductsData
-} from '../../../redux/slices/productSlice'
+import { clearProductMessage, deleteProduct } from '../../../redux/slices/productSlice'
 import { AppDispatch, RootState } from '../../../redux/store'
 import { Messages } from '../../../utils/Messages'
 import { Admin } from '../Admin'
-import { NewProductWrapper } from './NewProductWrapper'
 
-export function ProductsManager() {
+export function OrderDetails() {
   const { products, isLoading, error, success } = useSelector((state: RootState) => state.products)
   const dispatch = useDispatch<AppDispatch>()
-
-  useEffect(() => {
-    dispatch(fetchProductsData({ currentPage: 1, limit: 0, search: '', rangeId: 'range0' }))
-  }, [dispatch])
 
   return (
     <div className="main-content">
       <Admin />
       <div className="">
-        <div className="local-bootstrap">
-          <Accordion className="admin-form">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>Add New product </Accordion.Header>
-              <Accordion.Body>
-                <NewProductWrapper />
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        </div>
-
         {isLoading ? (
           <h3> Loading products...</h3>
         ) : (

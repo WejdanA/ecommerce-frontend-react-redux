@@ -13,6 +13,7 @@ type MessagesProp = {
     | ActionCreatorWithoutPayload<'user/clearUserMessage'>
     | ActionCreatorWithoutPayload<'category/clearCategoryMessage'>
     | ActionCreatorWithoutPayload<'product/clearProductMessage'>
+    | ActionCreatorWithoutPayload<'order/clearOrderMessage'>
 }
 
 export const Messages = ({ error, success, clearMessage }: MessagesProp) => {

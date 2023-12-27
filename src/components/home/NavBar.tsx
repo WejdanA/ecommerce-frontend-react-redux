@@ -26,6 +26,7 @@ import { UsersManager } from '../admin/users/UsersManager'
 import { Contact } from './Contact'
 import { ResetPassword } from '../user/ResetPassword'
 import { ForgetPassword } from '../user/ForgetPassword'
+import { OrderDetails } from '../admin/orders/OrderDetails'
 
 export const NavBar = () => {
   const dispatch = useDispatch()
@@ -97,6 +98,7 @@ export const NavBar = () => {
 
           <Route path="/user" element={<ProtectedRoute />}>
             <Route path="/user/profile" element={<Profile />} />
+            <Route path="user/order-details" element={<OrderDetails />} />
           </Route>
 
           <Route path="/admin" element={<AdminRoute />}>

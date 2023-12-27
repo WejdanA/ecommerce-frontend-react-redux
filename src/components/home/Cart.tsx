@@ -1,24 +1,25 @@
 import { ChangeEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { RootState } from '../../redux/store'
-import { ProductType } from '../../redux/slices/productSlice'
-import { removeItem, editQuantity, clearCart } from '../../redux/slices/cartSlice'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { addOrder } from '../../redux/slices/orderSlice'
+
+import { baseURL } from '../../api'
+import { clearCart, editQuantity, removeItem } from '../../redux/slices/cartSlice'
+import { CartItemsType, OrderInputType, placeOrder } from '../../redux/slices/orderSlice'
+import { AppDispatch, RootState } from '../../redux/store'
+import { ProductType } from '../../types/productTypes'
 
 export const Cart = () => {
   const navigate = useNavigate()
   const { items, isEmpty } = useSelector((state: RootState) => state.cartItems)
   const products = useSelector((state: RootState) => state.products.products)
   const { isLogin, loginUser } = useSelector((state: RootState) => state.users)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   let product: ProductType | undefined
-  const findItemDetails = (productId: number) => {
+  const findItemDetails = (productId: string) => {
     product = products.find((product) => {
-      return product.id == productId
+      return product._id == productId
     })
 
     return product
@@ -34,19 +35,28 @@ export const Cart = () => {
   }
 
   const addOrderHandle = () => {
+    let products: CartItemsType[] = []
     items.map((item) => {
-      let orders = []
-      orders.push({
-        id: +new Date(),
-        productId: item.productId,
-        userId: loginUser?.id,
-        purchasedAt: new Date()
+      products.push({
+        product: item.productId,
+        quantity: item.quantity
       })
-      dispatch(addOrder(orders))
     })
+
+    const order: OrderInputType = {
+      products,
+      user: loginUser?._id,
+      payment: {
+        method: 'credit-card'
+      }
+    }
+    console.log('orders before', order)
+    dispatch(placeOrder(order))
+
     dispatch(clearCart())
     navigate('/user/profile')
   }
+  console.log('items', items)
 
   return (
     <div id="cart" className="cart main-content">
@@ -56,11 +66,16 @@ export const Cart = () => {
         <>
           {items.map((item) => (
             <div key={item.id} className="cart-item">
-              <div className="cart-item-details">{findItemDetails(item.productId)?.id} </div>
+              <div className="cart-item-details">{findItemDetails(item.productId)?._id} </div>
               <div>
-                <img src={product?.image} alt={product?.name} width="50" className="product-img" />
+                <img
+                  src={baseURL + product?.image}
+                  alt={product?.name}
+                  width="50"
+                  className="product-img"
+                />
               </div>
-              <Link to={`/product/${product?.id}`}>
+              <Link to={`/product/${product?._id}`}>
                 <h1 className="cart-item-details">{product?.name}</h1>
               </Link>
               <input
@@ -83,7 +98,7 @@ export const Cart = () => {
           <div className="total-price">total amount: {getTotalPrice()} SAR</div>
 
           {isLogin ? (
-            <button className="order-btn" onClick={() => addOrderHandle()}>
+            <button className="order-btn" onClick={addOrderHandle}>
               place order
             </button>
           ) : (
